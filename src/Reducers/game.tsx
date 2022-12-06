@@ -7,6 +7,10 @@ let board = { 8: row, 7: row, 6: row, 5: row, 4: row, 3: row, 2: row, 1: row };
 const initialState = {
   board,
   selected: null,
+  show_legal_moves: true,
+  time_per_player: 600000,
+  time_player_1: 0,
+  time_player_2: 0,
 };
 
 export default function game(state = initialState, action = {}) {
@@ -14,6 +18,10 @@ export default function game(state = initialState, action = {}) {
   switch (action.type) {
     case TYPES.SET_SELECTED:
       return { ...newState, selected: action.value };
+    case TYPES.SET_TIME_PER_PLAY:
+      return { ...newState, time_per_player: action.value };
+    case TYPES.SET_SHOW_LEGAL_MOVES:
+      return { ...newState, show_legal_moves: action.value };
     default:
       return state;
   }

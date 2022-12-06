@@ -18,7 +18,7 @@ interface GameProps {}
 
 interface GameState {}
 
-class MainScreen extends Component<GameProps, GameState> {
+class LocalGameScreen extends Component<GameProps, GameState> {
   componentDidMount = () => {
     Chess.getInstance();
   };
@@ -111,4 +111,4 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(LocalGameScreen);
