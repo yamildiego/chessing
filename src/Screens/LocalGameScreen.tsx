@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, ImageBackground } from "react-native";
+import { StyleSheet, Text, View, ImageBackground, TouchableOpacity } from "react-native";
 
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 
@@ -12,13 +12,15 @@ import background from "../Assets/background.jpg";
 import white from "../Assets/white.png";
 import black from "../Assets/black.png";
 
-import Chess from "yd-chess-lib";
+import Chess, { tPosNS, tPosSN } from "yd-chess-lib";
 
 interface GameProps {}
 
 interface GameState {}
 
 class LocalGameScreen extends Component<GameProps, GameState> {
+  state = { lastMovement: null };
+
   componentDidMount = () => {
     Chess.getInstance();
   };
@@ -36,6 +38,20 @@ class LocalGameScreen extends Component<GameProps, GameState> {
     return color;
   };
 
+  tryToMove = (number, letter) => {
+    let posString = `${8 - number}${letter}`;
+    let posNumber = tPosSN(posString);
+    if (this.props.selected !== null) {
+      if (this.props.selected.movementsAllowed.includes(posString)) {
+        console.log("mover");
+        Chess.getInstance().move(`${this.props.selected.key}x${posString}`);
+        this.props.setSelected(null);
+      } else {
+        this.props.setSelected(null);
+      }
+    }
+  };
+
   render() {
     const { board, pieces } = this.props;
     return (
@@ -49,20 +65,17 @@ class LocalGameScreen extends Component<GameProps, GameState> {
                   <View key={`Row_${number}`} style={{ flexDirection: "row" }}>
                     {Object.keys(board[row]).map((letter, indexItem) => {
                       return (
-                        <ImageBackground
-                          key={`Item_${indexItem}`}
-                          source={(number + indexItem) % 2 == 0 ? white : black}
-                          resizeMode="cover"
-                          style={styles.image}
-                        >
-                          <View
-                            style={{
-                              backgroundColor: this.getColor(number, letter),
-                              width: 45,
-                              height: 45,
-                            }}
-                          />
-                        </ImageBackground>
+                        <TouchableOpacity key={`Item_${indexItem}`} delayPressIn={150} onPress={() => this.tryToMove(number, letter)}>
+                          <ImageBackground source={(number + indexItem) % 2 == 0 ? white : black} resizeMode="cover" style={styles.image}>
+                            <View
+                              style={{
+                                backgroundColor: this.getColor(number, letter),
+                                width: 45,
+                                height: 45,
+                              }}
+                            />
+                          </ImageBackground>
+                        </TouchableOpacity>
                       );
                     })}
                   </View>
@@ -73,7 +86,7 @@ class LocalGameScreen extends Component<GameProps, GameState> {
               .map((row, indexX) =>
                 row.map((item, indexY) => {
                   return (
-                    <Draggable index={1} item={item} key={`item_${indexX}_${indexY}`}>
+                    <Draggable index={1} item={item} key={`item_${indexX}_${indexY}`} lastMovement={this.state.lastMovement}>
                       <Piece piece={item} />
                     </Draggable>
                   );
@@ -109,6 +122,8 @@ const mapStateToProps = (state: AppState) => ({
   selected: state.game.selected,
 });
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {};
+const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+  setSelected: game.setSelected,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LocalGameScreen);

@@ -35,7 +35,7 @@
     "redux": "^4.2.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.2",
-    "yd-chess-lib": "^1.2.3"
+    "yd-chess-lib": "^1.3.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
