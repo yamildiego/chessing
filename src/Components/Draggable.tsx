@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { StyleSheet, Animated, PanResponder, View, Text, Easing, Dimensions } from "react-native";
+import { StyleSheet, Animated, PanResponder, View, TouchableOpacity, Text, Easing, Dimensions } from "react-native";
 
 import { connect } from "react-redux";
 import * as game from "../Actions/game";
@@ -10,7 +10,6 @@ const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
-  // const [zTest, setZTest] = useState(false);
   const { item, selected } = props;
   const oldItemRef = useRef();
 
@@ -20,23 +19,8 @@ const Draggable = (props) => {
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
     onPanResponderGrant: (evt, gestureState) => {
       setZIndex(1);
-      // pan.setValue({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
-      // pan.setOffset({ x: 0, y: 0 });
       pan.setOffset({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
-
-      // if (selected != null && selected.color !== item.color) {
-      //   if (selected.movementsAllowed.includes(item.key)) Chess.getInstance().move(`${selected.key}x${item.key}`);
-      //   //   // else props.setSelected(item);
-      // }
-
       if (selected == null || (selected !== null && selected.color === item.color && selected.key !== item.key)) props.setSelected(item);
-
-      // if (selected == null || (selected !== null && selected.color === item.color && selected.key !== item.key)) {
-      // } else {
-      //   if (selected.color !== item.color) Chess.getInstance().move(`${selected.key}x${item.key}`);
-      //   //   //chequear si esta en los movimientos permidodos
-      //   props.setSelected(null);
-      // }
     },
     onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
       useNativeDriver: false,
@@ -81,14 +65,12 @@ const Draggable = (props) => {
           if (positionTest.y == position.y) {
             pan.setValue({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
           } else {
-            if (item.key !== newPositionText) {
-              props.setSelected(null);
-            }
+            if (item.key !== newPositionText) props.setSelected(null);
 
             Animated.spring(pan, {
               toValue: { x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y },
               useNativeDriver: false,
-            }).start(() => {});
+            }).start();
           }
         }
       }
@@ -105,15 +87,32 @@ const Draggable = (props) => {
     oldItemRef.current = item;
   }, [item]);
 
+  const isDraggable = item !== null && item.color === "W";
+
+  const tryToMove = (p_item) => {
+    if (selected !== null) {
+      if (selected.movementsAllowed.includes(p_item.key)) Chess.getInstance().move(`${selected.key}x${p_item.key}`);
+      props.setSelected(null);
+    }
+  };
+
   return (
     <>
-      {item !== null && (
+      {item !== null && isDraggable && (
         <Animated.View
           {...panResponder.panHandlers}
           style={[{ transform: pan.getTranslateTransform() }, { position: "absolute" }, { zIndex: zIndex }]}
         >
           <View style={styles.itemDraggable}>{props.children}</View>
         </Animated.View>
+      )}
+
+      {item !== null && !isDraggable && (
+        <View style={[{ left: getPosition(item.key).x * 45, top: getPositionPixeles(item.key).y }, { position: "absolute" }]}>
+          <TouchableOpacity onPress={() => tryToMove(item)}>
+            <View style={styles.itemDraggable}>{props.children}</View>
+          </TouchableOpacity>
+        </View>
       )}
     </>
   );
