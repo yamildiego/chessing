@@ -10,7 +10,9 @@ const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
+  // const [zTest, setZTest] = useState(false);
   const { item, selected } = props;
+  const oldItemRef = useRef();
 
   const pan = useRef(new Animated.ValueXY()).current;
   const panResponder = PanResponder.create({
@@ -19,8 +21,16 @@ const Draggable = (props) => {
     onPanResponderGrant: (evt, gestureState) => {
       setZIndex(1);
       // pan.setValue({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
+      // pan.setOffset({ x: 0, y: 0 });
       pan.setOffset({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
+
+      // if (selected != null && selected.color !== item.color) {
+      //   if (selected.movementsAllowed.includes(item.key)) Chess.getInstance().move(`${selected.key}x${item.key}`);
+      //   //   // else props.setSelected(item);
+      // }
+
       if (selected == null || (selected !== null && selected.color === item.color && selected.key !== item.key)) props.setSelected(item);
+
       // if (selected == null || (selected !== null && selected.color === item.color && selected.key !== item.key)) {
       // } else {
       //   if (selected.color !== item.color) Chess.getInstance().move(`${selected.key}x${item.key}`);
@@ -36,63 +46,64 @@ const Draggable = (props) => {
     }),
     onPanResponderRelease: (evt, gestureState) => {
       setZIndex(1);
-      const { pageX, pageY } = evt.nativeEvent;
-      let x = { ...pan.x };
-      let y = { ...pan.y };
-      let positionMovedX = Math.round(x._value / 45);
-      let positionMovedY = Math.round(y._value / 45);
-      let pixelesMovidosX = positionMovedX * 45;
-      let pixelesMovidosY = positionMovedY * 45;
-      let position = tPosSN(item.key);
-      let newPosition = { x: position.y + positionMovedX, y: position.x - positionMovedY };
-      let canMove = false;
-      let newPositionText = translatePositionNumberToText(newPosition);
-      pan.flattenOffset();
-      if (item !== null && item.movementsAllowed.includes(newPositionText)) canMove = true;
-      if (item.key !== newPositionText && canMove === true) {
-        Animated.spring(pan, {
-          toValue: { x: getPosition(newPositionText).x * 45, y: getPositionPixeles(newPositionText).y },
+      if (selected !== null && selected.key == item.key) {
+        const { pageX, pageY } = evt.nativeEvent;
+        // pixeles moved
+        let x = { ...pan.x };
+        let y = { ...pan.y };
+        // calculated number of square moved
+        let positionMovedX = Math.round(x._value / 45);
+        let positionMovedY = Math.round(y._value / 45);
 
-          useNativeDriver: false,
-        }).start();
-        setTimeout(() => {
-          Chess.getInstance().move(`${item.key}x${newPositionText}`);
-          props.setSelected(null);
-        }, 150);
-      } else {
-        if (item.key == newPositionText) {
-          pan.setValue({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
-        } else {
+        // current position and new position
+        let position = tPosSN(item.key);
+        let newPosition = { x: position.y + positionMovedX, y: position.x - positionMovedY };
+        let newPositionText = translatePositionNumberToText(newPosition);
+
+        let canMove = false;
+
+        pan.flattenOffset();
+
+        //evaluate if its allow to move at the new squeare
+        if (item !== null && item.movementsAllowed.includes(newPositionText)) {
           Animated.spring(pan, {
-            toValue: { x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y },
+            toValue: { x: getPosition(newPositionText).x * 45, y: getPositionPixeles(newPositionText).y },
             useNativeDriver: false,
-          }).start(() => {
+          }).start();
+          setTimeout(() => {
+            Chess.getInstance().move(`${item.key}x${newPositionText}`);
             props.setSelected(null);
-          });
+          }, 150);
+        } else {
+          let positionTest = { x: 8 - positionMovedY, y: positionMovedX };
+
+          // if ramdom error that give the current coordinates instad of give the pixelesMoved set in the same spot wothout effect
+          if (positionTest.y == position.y) {
+            pan.setValue({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
+          } else {
+            if (item.key !== newPositionText) {
+              props.setSelected(null);
+            }
+
+            Animated.spring(pan, {
+              toValue: { x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y },
+              useNativeDriver: false,
+            }).start(() => {});
+          }
         }
       }
     },
-    // onPanResponderTerminate: () => {
-    //   if (Math.abs(pan.x._value) === 0) {
-    //     props.setSelected(item);
-    //   }
-    // },
   });
 
   useEffect(() => {
-    if (item !== null) {
-      // console.log("ME EJECUTO");
-      // console.log(item);
-      // [].setValue(0);
-      // Animated.spring(pan, {
-      //   toValue: { x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y },
-      //   useNativeDriver: false,
-      // }).start();
+    if (item !== null && (oldItemRef.current == undefined || oldItemRef.current == null))
       pan.setValue({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
-    }
-  }, [item]);
 
-  // , selected
+    if (item !== null && oldItemRef.current !== null && oldItemRef.current !== undefined && item.color !== oldItemRef.current.color)
+      pan.setValue({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
+
+    oldItemRef.current = item;
+  }, [item]);
 
   return (
     <>

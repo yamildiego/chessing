@@ -38,6 +38,11 @@ class LocalGameScreen extends Component<GameProps, GameState> {
     return color;
   };
 
+  //TODO ejecutar solo cuando el square(number letter) es null
+  // necesito agregar una fucnioin en la lib chess que le de una cordenada y me de el item
+  // y asi chequear si es nulo
+  //no deberia afectar pero para evitar errores y dobles ejecuciones ya
+  //que si hay algo lo ejecuta drageagle porque el zIndex es mayor
   tryToMove = (number, letter) => {
     let posString = `${8 - number}${letter}`;
     let posNumber = tPosSN(posString);
