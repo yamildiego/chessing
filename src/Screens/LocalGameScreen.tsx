@@ -19,8 +19,6 @@ interface GameProps {}
 interface GameState {}
 
 class LocalGameScreen extends Component<GameProps, GameState> {
-  state = { lastMovement: null };
-
   componentDidMount = () => {
     Chess.getInstance();
   };
@@ -82,7 +80,7 @@ class LocalGameScreen extends Component<GameProps, GameState> {
               .map((row, indexX) =>
                 row.map((item, indexY) => {
                   return (
-                    <Draggable index={1} item={item} key={`item_${indexX}_${indexY}`} lastMovement={this.state.lastMovement}>
+                    <Draggable index={1} item={item} key={`item_${indexX}_${indexY}`}>
                       <Piece piece={item} />
                     </Draggable>
                   );

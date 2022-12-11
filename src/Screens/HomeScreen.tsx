@@ -11,7 +11,7 @@ class HomeScreen extends Component {
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor={secondaryColor} barStyle={"dark-content"} style="auto" />
-        <ImageBackground source={background} resizeMode="cover" style={styles.imageBackground}>
+        <View source={background} resizeMode="cover" style={styles.imageBackground}>
           <View style={styles.buttons}>
             <Button
               color="secondary"
@@ -26,7 +26,7 @@ class HomeScreen extends Component {
               onPress={() => alert("🎉🎉🎉")}
             />
           </View>
-        </ImageBackground>
+        </View>
       </View>
     );
   }
