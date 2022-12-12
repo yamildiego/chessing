@@ -10,7 +10,7 @@ const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
-  const { item, selected } = props;
+  const { item, selected, size } = props;
   const oldItemRef = useRef();
 
   const pan = useRef(new Animated.ValueXY()).current;
@@ -19,7 +19,7 @@ const Draggable = (props) => {
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
     onPanResponderGrant: (evt, gestureState) => {
       setZIndex(1);
-      pan.setOffset({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
+      pan.setOffset({ x: getPosition(item.key).x * size, y: getPositionPixeles(item.key, size).y });
       if (selected == null || (selected !== null && selected.color === item.color && selected.key !== item.key)) props.setSelected(item);
     },
     onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
@@ -36,8 +36,8 @@ const Draggable = (props) => {
         let x = { ...pan.x };
         let y = { ...pan.y };
         // calculated number of square moved
-        let positionMovedX = Math.round(x._value / 45);
-        let positionMovedY = Math.round(y._value / 45);
+        let positionMovedX = Math.round(x._value / size);
+        let positionMovedY = Math.round(y._value / size);
 
         // current position and new position
         let position = tPosSN(item.key);
@@ -51,7 +51,7 @@ const Draggable = (props) => {
         //evaluate if its allow to move at the new squeare
         if (item !== null && item.movementsAllowed.includes(newPositionText)) {
           Animated.spring(pan, {
-            toValue: { x: getPosition(newPositionText).x * 45, y: getPositionPixeles(newPositionText).y },
+            toValue: { x: getPosition(newPositionText).x * size, y: getPositionPixeles(newPositionText, size).y },
             useNativeDriver: false,
           }).start();
           setTimeout(() => {
@@ -63,12 +63,12 @@ const Draggable = (props) => {
 
           // if ramdom error that give the current coordinates instad of give the pixelesMoved set in the same spot wothout effect
           if (positionTest.y == position.y) {
-            pan.setValue({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
+            pan.setValue({ x: getPosition(item.key).x * size, y: getPositionPixeles(item.key, size).y });
           } else {
             if (item.key !== newPositionText) props.setSelected(null);
 
             Animated.spring(pan, {
-              toValue: { x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y },
+              toValue: { x: getPosition(item.key).x * size, y: getPositionPixeles(item.key, size).y },
               useNativeDriver: false,
             }).start();
           }
@@ -79,10 +79,10 @@ const Draggable = (props) => {
 
   useEffect(() => {
     if (item !== null && (oldItemRef.current == undefined || oldItemRef.current == null))
-      pan.setValue({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
+      pan.setValue({ x: getPosition(item.key).x * size, y: getPositionPixeles(item.key, size).y });
 
     if (item !== null && oldItemRef.current !== null && oldItemRef.current !== undefined && item.color !== oldItemRef.current.color)
-      pan.setValue({ x: getPosition(item.key).x * 45, y: getPositionPixeles(item.key).y });
+      pan.setValue({ x: getPosition(item.key).x * size, y: getPositionPixeles(item.key, size).y });
 
     oldItemRef.current = item;
   }, [item]);
@@ -103,14 +103,14 @@ const Draggable = (props) => {
           {...panResponder.panHandlers}
           style={[{ transform: pan.getTranslateTransform() }, { position: "absolute" }, { zIndex: zIndex }]}
         >
-          <View style={styles.itemDraggable}>{props.children}</View>
+          <View style={{ ...styles.itemDraggable, width: size, height: size }}>{props.children}</View>
         </Animated.View>
       )}
 
       {item !== null && !isDraggable && (
-        <View style={[{ left: getPosition(item.key).x * 45, top: getPositionPixeles(item.key).y }, { position: "absolute" }]}>
+        <View style={[{ left: getPosition(item.key).x * size, top: getPositionPixeles(item.key, size).y }, { position: "absolute" }]}>
           <TouchableOpacity onPress={() => tryToMove(item)}>
-            <View style={styles.itemDraggable}>{props.children}</View>
+            <View style={{ ...styles.itemDraggable, width: size, height: size }}>{props.children}</View>
           </TouchableOpacity>
         </View>
       )}
@@ -119,15 +119,14 @@ const Draggable = (props) => {
 };
 
 const styles = StyleSheet.create({
-  itemDraggable: {
-    width: 46,
-    height: 46,
-    overflow: "hidden",
-  },
+  itemDraggable: { overflow: "hidden" },
 });
 
 const getPosition = (key) => ({ x: key.substring(1, 2).charCodeAt(0) - 97, y: parseInt(key.substring(0, 1)) - 1 });
-const getPositionPixeles = (key) => ({ x: getPosition(key).x * 45, y: 315 - getPosition(key).y * 45 });
+const getPositionPixeles = (key, size) => ({
+  x: getPosition(key).x * size,
+  y: 7 * size - getPosition(key).y * (size !== undefined ? size : 45),
+});
 
 const translatePositionNumberToText = (position) => {
   let y = position.y;

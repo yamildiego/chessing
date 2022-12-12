@@ -1,5 +1,6 @@
 import { StyleSheet, View, ImageBackground, TouchableOpacity } from "react-native";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
+import { Dimensions } from "react-native";
 
 import Draggable from "./Draggable";
 import Piece from "./Piece";
@@ -13,6 +14,8 @@ import Chess, { tPosSN, tPosNS } from "yd-chess-lib";
 
 const Board = (props) => {
   const { board, pieces } = props;
+  const windowWidth = Dimensions.get("window").width;
+  const size = Math.round(windowWidth * 0.1175);
 
   const getColor = (number, letter) => {
     let color = "transparent";
@@ -52,8 +55,8 @@ const Board = (props) => {
                         <View
                           style={{
                             backgroundColor: getColor(number, letter),
-                            width: 45,
-                            height: 45,
+                            width: size,
+                            height: size,
                           }}
                         />
                       </ImageBackground>
@@ -68,8 +71,8 @@ const Board = (props) => {
           .map((row, indexX) =>
             row.map((item, indexY) => {
               return (
-                <Draggable index={1} item={item} key={`item_${indexX}_${indexY}`}>
-                  <Piece piece={item} />
+                <Draggable size={size} index={1} item={item} key={`item_${indexX}_${indexY}`}>
+                  <Piece size={size} piece={item} />
                 </Draggable>
               );
             })

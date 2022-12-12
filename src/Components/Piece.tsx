@@ -15,20 +15,28 @@ const pieces = {
 
 const Piece = (props) => {
   return (
-    <View style={{ position: "relative", height: 46 }}>
+    <View style={{ position: "relative", height: props.size }}>
       <Text
         style={{
           position: "absolute",
-          width: 45,
+          width: props.size,
           textAlign: "center",
           left: 1,
-          top: 8,
+          top: props.size * 0.192,
         }}
       >
-        <FontAwesome5 style={{ color: props.piece.color === "B" ? "white" : "black" }} name={pieces[props.piece.type]} size={26} />
+        <FontAwesome5
+          style={{ color: props.piece.color === "B" ? "white" : "black" }}
+          name={pieces[props.piece.type]}
+          size={props.size * 0.58}
+        />
       </Text>
-      <Text style={{ position: "absolute", width: 45, textAlign: "center", top: 8 }}>
-        <FontAwesome5 style={{ color: props.piece.color === "W" ? "white" : "black" }} name={pieces[props.piece.type]} size={26} />
+      <Text style={{ position: "absolute", width: props.size, textAlign: "center", top: props.size * 0.192 }}>
+        <FontAwesome5
+          style={{ color: props.piece.color === "W" ? "white" : "black" }}
+          name={pieces[props.piece.type]}
+          size={props.size * 0.58}
+        />
       </Text>
     </View>
   );
