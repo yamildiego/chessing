@@ -19,7 +19,7 @@ const Draggable = (props) => {
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
     onPanResponderGrant: (evt, gestureState) => {
       setZIndex(1);
-      pan.setOffset({ x: getPosition(item.key).x * size, y: getPositionPixeles(item.key, size).y });
+      pan.setOffset({ ...getPositionPixeles(item.key, size) });
       if (selected == null || (selected !== null && selected.color === item.color && selected.key !== item.key)) props.setSelected(item);
     },
     onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
@@ -51,7 +51,7 @@ const Draggable = (props) => {
         //evaluate if its allow to move at the new squeare
         if (item !== null && item.movementsAllowed.includes(newPositionText)) {
           Animated.spring(pan, {
-            toValue: { x: getPosition(newPositionText).x * size, y: getPositionPixeles(newPositionText, size).y },
+            toValue: { ...getPositionPixeles(newPositionText, size) },
             useNativeDriver: false,
           }).start();
           setTimeout(() => {
@@ -63,12 +63,12 @@ const Draggable = (props) => {
 
           // if ramdom error that give the current coordinates instad of give the pixelesMoved set in the same spot wothout effect
           if (positionTest.y == position.y) {
-            pan.setValue({ x: getPosition(item.key).x * size, y: getPositionPixeles(item.key, size).y });
+            pan.setValue({ ...getPositionPixeles(item.key, size) });
           } else {
             if (item.key !== newPositionText) props.setSelected(null);
 
             Animated.spring(pan, {
-              toValue: { x: getPosition(item.key).x * size, y: getPositionPixeles(item.key, size).y },
+              toValue: { ...getPositionPixeles(item.key, size) },
               useNativeDriver: false,
             }).start();
           }
@@ -79,10 +79,10 @@ const Draggable = (props) => {
 
   useEffect(() => {
     if (item !== null && (oldItemRef.current == undefined || oldItemRef.current == null))
-      pan.setValue({ x: getPosition(item.key).x * size, y: getPositionPixeles(item.key, size).y });
+      pan.setValue({ ...getPositionPixeles(item.key, size) });
 
     if (item !== null && oldItemRef.current !== null && oldItemRef.current !== undefined && item.color !== oldItemRef.current.color)
-      pan.setValue({ x: getPosition(item.key).x * size, y: getPositionPixeles(item.key, size).y });
+      pan.setValue({ ...getPositionPixeles(item.key, size) });
 
     oldItemRef.current = item;
   }, [item]);
@@ -108,7 +108,7 @@ const Draggable = (props) => {
       )}
 
       {item !== null && !isDraggable && (
-        <View style={[{ left: getPosition(item.key).x * size, top: getPositionPixeles(item.key, size).y }, { position: "absolute" }]}>
+        <View style={[{ left: getPositionPixeles(item.key, size).x, top: getPositionPixeles(item.key, size).y }, { position: "absolute" }]}>
           <TouchableOpacity onPress={() => tryToMove(item)}>
             <View style={{ ...styles.itemDraggable, width: size, height: size }}>{props.children}</View>
           </TouchableOpacity>
@@ -118,15 +118,9 @@ const Draggable = (props) => {
   );
 };
 
-const styles = StyleSheet.create({
-  itemDraggable: { overflow: "hidden" },
-});
+const styles = StyleSheet.create({ itemDraggable: { overflow: "hidden" } });
 
-const getPosition = (key) => ({ x: key.substring(1, 2).charCodeAt(0) - 97, y: parseInt(key.substring(0, 1)) - 1 });
-const getPositionPixeles = (key, size) => ({
-  x: getPosition(key).x * size,
-  y: 7 * size - getPosition(key).y * (size !== undefined ? size : 45),
-});
+const getPositionPixeles = (key, size) => ({ x: tPosSN(key).y * size, y: 7 * size - tPosSN(key).x * size });
 
 const translatePositionNumberToText = (position) => {
   let y = position.y;
