@@ -5,9 +5,9 @@ import PlayerInfo from "./PlayerInfo";
 
 const PlayersInfo = (props) => {
   return (
-    <View style={{ flexDirection: "row" }}>
-      <PlayerInfo isPlaying={props.isPlaying == "W"} color="WHITE" />
-      <PlayerInfo isPlaying={props.isPlaying == "B"} color="BLACK" />
+    <View style={{ flexDirection: "row", marginTop: 20 }}>
+      <PlayerInfo timePerPlayer={props.timePerPlayer} isPlaying={props.isPlaying == "W"} color="WHITE" />
+      <PlayerInfo timePerPlayer={props.timePerPlayer} isPlaying={props.isPlaying == "B"} color="BLACK" />
     </View>
   );
 };

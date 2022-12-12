@@ -24,17 +24,17 @@ class LocalGameScreen extends Component {
 
     return (
       <ImageBackground source={background} resizeMode="cover" style={styles.backgroundImage}>
-        <View style={{ ...transformFlip, flex: 1, width: "100%", maxWidth: 360, justifyContent: "flex-start" }}>
-          <PlayersInfo isPlaying={this.props.is_playing} />
+        <TouchableOpacity onPress={() => this.props.switchPlayer()}>
+          <Text style={{ fontSize: 20 }}> ACA</Text>
+        </TouchableOpacity>
+        <View style={{ ...transformFlip, flex: 1, width: "100%", maxWidth: 380, justifyContent: "flex-start" }}>
+          <PlayersInfo timePerPlayer={this.props.time_per_player} isPlaying={this.props.is_playing} />
         </View>
         <View>
-          <TouchableOpacity onPress={() => this.props.switchPlayer()}>
-            <Text style={{ fontSize: 20 }}> ACA</Text>
-          </TouchableOpacity>
           <Board />
         </View>
-        <View style={{ flex: 1, width: "100%", maxWidth: 360 }}>
-          <PlayersInfo isPlaying={this.props.is_playing} />
+        <View style={{ flex: 1, width: "100%", maxWidth: 380 }}>
+          <PlayersInfo timePerPlayer={this.props.time_per_player} isPlaying={this.props.is_playing} />
         </View>
       </ImageBackground>
     );
@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state: AppState) => ({
   is_playing: state.game.is_playing,
+  time_per_player: state.game.time_per_player,
   // board: state.game.board,
   // selected: state.game.selected,
 });

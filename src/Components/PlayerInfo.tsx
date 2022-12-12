@@ -10,7 +10,7 @@ const PlayerInfo = (props) => {
     <View style={{ ...styles.container, ...stylesContainer }}>
       <Text style={{ ...styles.text, ...stylesText }}>Player: {props.color}</Text>
       <Countdown
-        from={50000}
+        from={props.timePerPlayer}
         isRunning={props.isPlaying}
         style={styles.countdown}
         styleText={{ ...styles.countdownText, ...stylesCountdownText }}

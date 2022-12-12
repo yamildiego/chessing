@@ -10,7 +10,7 @@ const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
-  const { item, selected, size } = props;
+  const { item, selected, size, isDraggable } = props;
   const oldItemRef = useRef();
 
   const pan = useRef(new Animated.ValueXY()).current;
@@ -57,6 +57,7 @@ const Draggable = (props) => {
           setTimeout(() => {
             Chess.getInstance().move(`${item.key}x${newPositionText}`);
             props.setSelected(null);
+            props.switchPlayer();
           }, 150);
         } else {
           let positionTest = { x: 8 - positionMovedY, y: positionMovedX };
@@ -87,11 +88,12 @@ const Draggable = (props) => {
     oldItemRef.current = item;
   }, [item]);
 
-  const isDraggable = item !== null && item.color === "W";
-
   const tryToMove = (p_item) => {
     if (selected !== null) {
-      if (selected.movementsAllowed.includes(p_item.key)) Chess.getInstance().move(`${selected.key}x${p_item.key}`);
+      if (selected.movementsAllowed.includes(p_item.key)) {
+        Chess.getInstance().move(`${selected.key}x${p_item.key}`);
+        props.switchPlayer();
+      }
       props.setSelected(null);
     }
   };
@@ -109,7 +111,7 @@ const Draggable = (props) => {
 
       {item !== null && !isDraggable && (
         <View style={[{ left: getPositionPixeles(item.key, size).x, top: getPositionPixeles(item.key, size).y }, { position: "absolute" }]}>
-          <TouchableOpacity onPress={() => tryToMove(item)}>
+          <TouchableOpacity activeOpacity={1} onPress={() => tryToMove(item)}>
             <View style={{ ...styles.itemDraggable, width: size, height: size }}>{props.children}</View>
           </TouchableOpacity>
         </View>
@@ -141,6 +143,7 @@ function mapStateToProps(state, props) {
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setSelected: game.setSelected,
+  switchPlayer: game.switchPlayer,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Draggable);
