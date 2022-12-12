@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
 });
 
 const getPosition = (key) => ({ x: key.substring(1, 2).charCodeAt(0) - 97, y: parseInt(key.substring(0, 1)) - 1 });
-const getPositionPixeles = (key) => ({ x: getPosition(key).x * 45, y: 365 - getPosition(key).y * 45 });
+const getPositionPixeles = (key) => ({ x: getPosition(key).x * 45, y: 315 - getPosition(key).y * 45 });
 
 const translatePositionNumberToText = (position) => {
   let y = position.y;

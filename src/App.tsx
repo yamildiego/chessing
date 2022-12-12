@@ -50,8 +50,8 @@ export default function App() {
       <Provider store={store}>
         <NavigationContainer onReady={onLayoutRootView}>
           <Stack.Navigator>
-            <Stack.Screen options={{ header: (props) => <Header {...props} /> }} name="HomeScreen" component={HomeScreen} />
-            <Stack.Screen
+            {/* <Stack.Screen options={{ header: (props) => <Header {...props} /> }} name="HomeScreen" component={HomeScreen} /> */}
+            {/* <Stack.Screen
               options={{
                 headerStyle: { backgroundColor: "#fff" },
                 headerTintColor: secondaryColor,
@@ -60,7 +60,7 @@ export default function App() {
               }}
               name="ConfigLocalGameScreen"
               component={ConfigLocalGameScreen}
-            />
+            /> */}
             <Stack.Screen options={{ headerShown: false }} name="LocalGameScreen" component={LocalGameScreen} />
           </Stack.Navigator>
         </NavigationContainer>

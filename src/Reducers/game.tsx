@@ -11,6 +11,7 @@ const initialState = {
   time_per_player: 600000,
   time_player_1: 0,
   time_player_2: 0,
+  is_playing: "W",
 };
 
 export default function game(state = initialState, action = {}) {
@@ -22,6 +23,8 @@ export default function game(state = initialState, action = {}) {
       return { ...newState, time_per_player: action.value };
     case TYPES.SET_SHOW_LEGAL_MOVES:
       return { ...newState, show_legal_moves: action.value };
+    case TYPES.SWITCH_PLAYER:
+      return { ...newState, is_playing: state.is_playing === "W" ? "B" : "W" };
     default:
       return state;
   }

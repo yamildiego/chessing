@@ -14,3 +14,7 @@ export const setTimePerPlayer = (value) => ({
   type: TYPES.SET_TIME_PER_PLAY,
   value,
 });
+
+export const switchPlayer = () => ({
+  type: TYPES.SWITCH_PLAYER,
+});
