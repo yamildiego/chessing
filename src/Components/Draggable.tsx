@@ -98,24 +98,26 @@ const Draggable = (props) => {
     }
   };
 
+  const propsAnimated = item != null && isDraggable ? { ...panResponder.panHandlers } : {};
+
   return (
     <>
-      {item !== null && isDraggable && (
-        <Animated.View
-          {...panResponder.panHandlers}
-          style={[{ transform: pan.getTranslateTransform() }, { position: "absolute" }, { zIndex: zIndex }]}
-        >
-          <View style={{ ...styles.itemDraggable, width: size, height: size }}>{props.children}</View>
-        </Animated.View>
-      )}
-
-      {item !== null && !isDraggable && (
-        <View style={[{ left: getPositionPixeles(item.key, size).x, top: getPositionPixeles(item.key, size).y }, { position: "absolute" }]}>
-          <TouchableOpacity activeOpacity={1} onPress={() => tryToMove(item)}>
+      <Animated.View
+        {...propsAnimated}
+        style={
+          item !== null && isDraggable
+            ? [{ transform: pan.getTranslateTransform() }, { position: "absolute" }, { zIndex: zIndex }]
+            : item !== null
+            ? [{ left: getPositionPixeles(item.key, size).x, top: getPositionPixeles(item.key, size).y }, { position: "absolute" }]
+            : {}
+        }
+      >
+        {item !== null && (
+          <TouchableOpacity activeOpacity={1} onPress={() => (!isDraggable ? tryToMove(item) : null)}>
             <View style={{ ...styles.itemDraggable, width: size, height: size }}>{props.children}</View>
           </TouchableOpacity>
-        </View>
-      )}
+        )}
+      </Animated.View>
     </>
   );
 };

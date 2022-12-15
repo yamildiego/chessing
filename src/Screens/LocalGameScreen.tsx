@@ -24,9 +24,6 @@ class LocalGameScreen extends Component {
 
     return (
       <ImageBackground source={background} resizeMode="cover" style={styles.backgroundImage}>
-        <TouchableOpacity onPress={() => this.props.switchPlayer()}>
-          <Text style={{ fontSize: 20 }}> ACA</Text>
-        </TouchableOpacity>
         <View style={{ ...transformFlip, flex: 1, width: "100%", maxWidth: 380, justifyContent: "flex-start" }}>
           <PlayersInfo timePerPlayer={this.props.time_per_player} isPlaying={this.props.is_playing} />
         </View>

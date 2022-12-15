@@ -57,7 +57,7 @@ const Board = (props) => {
                       <ImageBackground source={(number + indexItem) % 2 == 0 ? white : black} resizeMode="cover" style={styles.image}>
                         <View style={{ width: size, height: size }}>
                           {isHighlight(number, letter) && (
-                            <View style={{ borderWidth: 6, borderColor: "#44444455", borderRadius: 45, height: 28, margin: 10 }} />
+                            <View style={{ borderWidth: 6, borderColor: "#44444455", borderRadius: 100, height: size - 20, margin: 10 }} />
                           )}
                         </View>
                       </ImageBackground>
@@ -79,7 +79,7 @@ const Board = (props) => {
                   item={item}
                   key={`item_${indexX}_${indexY}`}
                 >
-                  <Piece size={size} piece={item} />
+                  <Piece size={size} piece={item} is_playing={is_playing} />
                 </Draggable>
               );
             })

@@ -2,13 +2,13 @@ import Countdown from "yd-react-native-countdown";
 import { StyleSheet, Text, View } from "react-native";
 
 const PlayerInfo = (props) => {
-  const stylesContainer = !props.isPlaying ? { backgroundColor: "#D9D9D9", borderColor: "#D9D9D9" } : {};
-  const stylesText = !props.isPlaying ? { color: "#979797" } : {};
-  const stylesCountdownText = !props.isPlaying ? { color: "#979797" } : {};
+  const stylesContainer = props.isPlaying ? { backgroundColor: props.color, borderColor: props.color } : {};
+  const stylesText = props.isPlaying ? { color: props.color == "black" ? "#fff" : "#444" } : {};
+  const stylesCountdownText = props.isPlaying ? { color: props.color == "black" ? "#fff" : "#444" } : {};
 
   return (
     <View style={{ ...styles.container, ...stylesContainer }}>
-      <Text style={{ ...styles.text, ...stylesText }}>Player: {props.color}</Text>
+      <Text style={{ ...styles.text, ...stylesText }}>Player: {props.color.toUpperCase()}</Text>
       <Countdown
         from={props.timePerPlayer}
         isRunning={props.isPlaying}
@@ -23,14 +23,14 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 2,
     flexDirection: "row",
-    backgroundColor: "#007AFF",
+    backgroundColor: "#D9D9D9",
+    borderColor: "#D9D9D9",
     width: "50%",
-    borderColor: "#007AFF",
     borderWidth: 2,
   },
   text: {
     padding: 6,
-    color: "white",
+    color: "#979797",
     fontFamily: "Ubuntu",
     lineHeight: 28,
     fontWeight: "bold",
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   countdownText: {
     fontSize: 16,
-    color: "#fff",
+    color: "#979797",
   },
 });
 

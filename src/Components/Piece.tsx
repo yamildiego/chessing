@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { View, Text } from "react-native";
+import React, { Component, useRef, useEffect } from "react";
+import { View, Text, Animated } from "react-native";
 
 import { FontAwesome5 } from "@expo/vector-icons";
 import { TypeOfPiece } from "yd-chess-lib";
@@ -14,8 +14,32 @@ const pieces = {
 };
 
 const Piece = (props) => {
+  const scaleAnimated = useRef(new Animated.Value(1));
+
+  const animatedStyle = {
+    transform: [{ scaleY: scaleAnimated.current }, { scaleX: scaleAnimated.current }],
+  };
+
+  const onPress = (color) => {
+    if (color === "W")
+      Animated.timing(scaleAnimated.current, {
+        duration: 300,
+        toValue: 1,
+        useNativeDriver: false,
+      }).start();
+
+    if (color === "B")
+      Animated.timing(scaleAnimated.current, {
+        duration: 300,
+        toValue: -1,
+        useNativeDriver: false,
+      }).start();
+  };
+
+  useEffect(() => onPress(props.is_playing), [props.is_playing]);
+
   return (
-    <View style={{ position: "relative", height: props.size }}>
+    <Animated.View style={{ position: "relative", height: props.size, ...animatedStyle }}>
       <Text
         style={{
           position: "absolute",
@@ -38,7 +62,7 @@ const Piece = (props) => {
           size={props.size * 0.58}
         />
       </Text>
-    </View>
+    </Animated.View>
   );
 };
 
