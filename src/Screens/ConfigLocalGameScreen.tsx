@@ -10,12 +10,18 @@ import background from "../Assets/background.jpg";
 import white from "../Assets/white.png";
 import black from "../Assets/black.png";
 
+import Chess from "yd-chess-lib";
+
 const times = { 180000: "3", 300000: "5", 600000: "10", 900000: "15" };
 
 class ConfigLocalGameScreen extends Component {
   toggleShowLegalMoves = () => this.props.setShowLegalMoves(!this.props.show_legal_moves);
   setTimePerPlayer = (time) => this.props.setTimePerPlayer(time);
-  openGameLocal = () => this.props.navigation.navigate("LocalGameScreen");
+  openGameLocal = () => {
+    Chess.getInstance().reStart();
+    this.props.initializedBoard();
+    this.props.navigation.navigate("LocalGameScreen");
+  };
 
   render() {
     const { board, pieces, time_per_player, show_legal_moves } = this.props;
@@ -104,6 +110,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setShowLegalMoves: game.setShowLegalMoves,
   setTimePerPlayer: game.setTimePerPlayer,
+  initializedBoard: game.initializedBoard,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigLocalGameScreen);

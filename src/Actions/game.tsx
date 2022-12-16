@@ -23,11 +23,6 @@ export const inizializeConfig = () => ({
   type: TYPES.INITIALIZE_CONFIG,
 });
 
-export const setLoadingBoard = (value) => ({
-  type: TYPES.LOADING_BOARD,
-  value,
-});
-
-export const setInitializedBoard = () => ({
+export const initializedBoard = () => ({
   type: TYPES.INITIALIZE_BOARD,
 });

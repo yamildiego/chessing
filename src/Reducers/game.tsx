@@ -10,7 +10,6 @@ const initialState = {
   show_legal_moves: true,
   time_per_player: 600000,
   is_playing: "W",
-  loading_board: true,
 };
 
 export default function game(state = initialState, action = {}) {
@@ -26,10 +25,8 @@ export default function game(state = initialState, action = {}) {
       return { ...newState, is_playing: state.is_playing === "W" ? "B" : "W" };
     case TYPES.INITIALIZE_CONFIG:
       return { ...newState, selected: null, show_legal_moves: true, time_per_player: 600000, is_playing: "W" };
-    case TYPES.LOADING_BOARD:
-      return { ...newState, loading_board: action.value };
     case TYPES.INITIALIZE_BOARD:
-      return { ...newState, loading_board: false };
+      return { ...newState, is_playing: "W", selected: null };
     default:
       return state;
   }
