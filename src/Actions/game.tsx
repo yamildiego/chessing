@@ -18,3 +18,16 @@ export const setTimePerPlayer = (value) => ({
 export const switchPlayer = () => ({
   type: TYPES.SWITCH_PLAYER,
 });
+
+export const inizializeConfig = () => ({
+  type: TYPES.INITIALIZE_CONFIG,
+});
+
+export const setLoadingBoard = (value) => ({
+  type: TYPES.LOADING_BOARD,
+  value,
+});
+
+export const setInitializedBoard = () => ({
+  type: TYPES.INITIALIZE_BOARD,
+});

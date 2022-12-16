@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -15,7 +15,6 @@ import rootReducers from "./Reducers";
 import HomeScreen from "./Screens/HomeScreen";
 import ConfigLocalGameScreen from "./Screens/ConfigLocalGameScreen";
 import LocalGameScreen from "./Screens/LocalGameScreen";
-import Header from "./Components/Header";
 
 import { secondaryColor } from "./Constants/MyColors";
 
@@ -36,21 +35,17 @@ export default function App() {
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
+    if (fontsLoaded) await SplashScreen.hideAsync();
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  if (!fontsLoaded) return null;
 
   return (
     <View style={styles.container}>
       <Provider store={store}>
         <NavigationContainer onReady={onLayoutRootView}>
           <Stack.Navigator>
-            <Stack.Screen options={{ header: (props) => <Header {...props} /> }} name="HomeScreen" component={HomeScreen} />
+            <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomeScreen} />
             <Stack.Screen
               options={{
                 headerStyle: { backgroundColor: "#fff" },

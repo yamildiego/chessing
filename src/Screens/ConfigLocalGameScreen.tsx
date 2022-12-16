@@ -13,8 +13,8 @@ import black from "../Assets/black.png";
 const times = { 180000: "3", 300000: "5", 600000: "10", 900000: "15" };
 
 class ConfigLocalGameScreen extends Component {
-  toggleShowLegalMoves = () => this.props.dispatch(game.setShowLegalMoves(!this.props.show_legal_moves));
-  setTimePerPlayer = (time) => this.props.dispatch(game.setTimePerPlayer(time));
+  toggleShowLegalMoves = () => this.props.setShowLegalMoves(!this.props.show_legal_moves);
+  setTimePerPlayer = (time) => this.props.setTimePerPlayer(time);
   openGameLocal = () => this.props.navigation.navigate("LocalGameScreen");
 
   render() {
@@ -38,7 +38,7 @@ class ConfigLocalGameScreen extends Component {
                     <Button
                       key={index}
                       color={time_per_player == key ? "secondary" : "grey"}
-                      title={() => <Text style={{ fontSize: 16, lineHeight: 30, color: "white", fontFamily: "Ubuntu" }}>{times[key]}</Text>}
+                      title={() => <Text style={styles.buttonText}>{times[key]}</Text>}
                       onPress={() => this.setTimePerPlayer(key)}
                     />
                   );
@@ -50,7 +50,7 @@ class ConfigLocalGameScreen extends Component {
         <Button
           style={{ padding: 10 }}
           color="secondary"
-          title={() => <Text style={{ fontSize: 16, lineHeight: 30, color: "white", fontFamily: "Ubuntu" }}>PLAY</Text>}
+          title={() => <Text style={styles.buttonText}>PLAY</Text>}
           onPress={() => this.openGameLocal()}
         />
       </View>
@@ -86,6 +86,12 @@ const styles = StyleSheet.create({
     fontFamily: "Ubuntu",
     textAlign: "center",
   },
+  buttonText: {
+    fontSize: 16,
+    lineHeight: 30,
+    color: "white",
+    fontFamily: "Ubuntu",
+  },
 });
 
 const mapStateToProps = (state: AppState) => ({
@@ -95,4 +101,9 @@ const mapStateToProps = (state: AppState) => ({
   time_per_player: state.game.time_per_player,
 });
 
-export default connect(mapStateToProps)(ConfigLocalGameScreen);
+const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+  setShowLegalMoves: game.setShowLegalMoves,
+  setTimePerPlayer: game.setTimePerPlayer,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigLocalGameScreen);

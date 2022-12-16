@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Animated, PanResponder, View, TouchableOpacity, Text, Easing, Dimensions } from "react-native";
 
 import { connect } from "react-redux";
@@ -10,8 +10,7 @@ const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
-  const { item, selected, size, isDraggable } = props;
-  const oldItemRef = useRef();
+  const { item, selected, size, isDraggable, pieceMoved } = props;
 
   const pan = useRef(new Animated.ValueXY()).current;
   const panResponder = PanResponder.create({
@@ -79,14 +78,24 @@ const Draggable = (props) => {
   });
 
   useEffect(() => {
-    if (item !== null && (oldItemRef.current == undefined || oldItemRef.current == null))
-      pan.setValue({ ...getPositionPixeles(item.key, size) });
+    if (item !== null) pan.setValue({ ...getPositionPixeles(item.key, size) });
 
-    if (item !== null && oldItemRef.current !== null && oldItemRef.current !== undefined && item.color !== oldItemRef.current.color)
-      pan.setValue({ ...getPositionPixeles(item.key, size) });
-
-    oldItemRef.current = item;
-  }, [item]);
+    if (pieceMoved !== null && item !== null && pieceMoved.from === item.key) {
+      Animated.spring(pan, {
+        toValue: { ...getPositionPixeles(pieceMoved.to, size) },
+        useNativeDriver: false,
+        velocity: 150,
+        restSpeedThreshold: 20,
+        restDisplacementThreshold: 15,
+      }).start(() => {
+        setTimeout(() => {
+          Chess.getInstance().move(`${pieceMoved.from}x${pieceMoved.to}`);
+          props.setSelected(null);
+          props.switchPlayer();
+        }, 150);
+      });
+    }
+  }, [item, pieceMoved]);
 
   const tryToMove = (p_item) => {
     if (selected !== null) {

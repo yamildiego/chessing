@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ImageBackground, TouchableOpacity, Text } from "react-native";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 import { Dimensions } from "react-native";
@@ -16,19 +17,19 @@ const Board = (props) => {
   const { board, pieces, is_playing } = props;
   const windowWidth = Dimensions.get("window").width;
   const size = Math.round(windowWidth * 0.1175);
+  const [pieceMoved, setPieceMoved] = useState(null);
 
-  const isHighlight = (number, letter) => {
-    let is_highlight = false;
+  const highlight = (number, letter) => {
     const { selected, show_legal_moves } = props;
-    if (
+    return (
       show_legal_moves &&
       selected != null &&
       selected.movementsAllowed.length > 0 &&
       selected.movementsAllowed.includes(`${8 - number}${letter}`)
-    )
-      is_highlight = true;
-    return is_highlight;
+    );
   };
+
+  const isSelected = (number, letter) => props.show_legal_moves && props.selected != null && props.selected.key == `${8 - number}${letter}`;
 
   const tryToMove = (number, letter) => {
     let posString = `${8 - number}${letter}`;
@@ -36,8 +37,9 @@ const Board = (props) => {
     let square = Chess.getInstance().getSquare(posString);
     if (props.selected !== null && square == null) {
       if (props.selected.movementsAllowed.includes(posString)) {
-        Chess.getInstance().move(`${props.selected.key}x${posString}`);
-        props.switchPlayer();
+        setPieceMoved({ from: props.selected.key, to: posString });
+        // setPieceMoved(`${props.selected.key}x${posString}`);
+        //this var is becose the animation. I'll move inside
       }
       props.setSelected(null);
     }
@@ -56,8 +58,17 @@ const Board = (props) => {
                     <TouchableOpacity key={`Item_${indexItem}`} activeOpacity={1} onPress={() => tryToMove(number, letter)}>
                       <ImageBackground source={(number + indexItem) % 2 == 0 ? white : black} resizeMode="cover" style={styles.image}>
                         <View style={{ width: size, height: size }}>
-                          {isHighlight(number, letter) && (
-                            <View style={{ borderWidth: 6, borderColor: "#44444455", borderRadius: 100, height: size - 20, margin: 10 }} />
+                          {highlight(number, letter) && <View style={{ ...styles.highlight, height: size - 20 }} />}
+                          {isSelected(number, letter) && (
+                            <View
+                              style={{
+                                ...styles.highlight,
+                                margin: 5,
+                                width: size - 10,
+                                height: size - 10,
+                                backgroundColor: "#44444455",
+                              }}
+                            />
                           )}
                         </View>
                       </ImageBackground>
@@ -67,23 +78,26 @@ const Board = (props) => {
               </View>
             );
           })}
-        {Chess.getInstance()
-          .getChessboard()
-          .map((row, indexX) =>
-            row.map((item, indexY) => {
-              return (
-                <Draggable
-                  isDraggable={item !== null && item.color === is_playing && item.movementsAllowed.length > 0}
-                  size={size}
-                  index={1}
-                  item={item}
-                  key={`item_${indexX}_${indexY}`}
-                >
-                  <Piece size={size} piece={item} is_playing={is_playing} />
-                </Draggable>
-              );
-            })
-          )}
+        <>
+          {Chess.getInstance()
+            .getChessboard()
+            .map((row, indexX) =>
+              row.map((item, indexY) => {
+                return (
+                  <Draggable
+                    isDraggable={item !== null && item.color === is_playing && item.movementsAllowed.length > 0}
+                    size={size}
+                    index={1}
+                    item={item}
+                    pieceMoved={pieceMoved}
+                    key={`item_${indexX}_${indexY}`}
+                  >
+                    <Piece size={size} piece={item} is_playing={is_playing} />
+                  </Draggable>
+                );
+              })
+            )}
+        </>
       </View>
     </View>
   );
@@ -94,6 +108,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     backgroundColor: "#F2D6AF",
+  },
+  highlight: {
+    borderWidth: 6,
+    borderColor: "#44444455",
+    borderRadius: 100,
+    margin: 10,
   },
 });
 
@@ -107,6 +127,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setSelected: game.setSelected,
   switchPlayer: game.switchPlayer,
+  setInitializedBoard: game.setInitializedBoard,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Board);

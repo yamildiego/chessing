@@ -1,5 +1,5 @@
-import Countdown from "yd-react-native-countdown";
 import { StyleSheet, Text, View } from "react-native";
+import Countdown from "yd-react-native-countdown";
 
 const PlayerInfo = (props) => {
   const stylesContainer = props.isPlaying ? { backgroundColor: props.color, borderColor: props.color } : {};
