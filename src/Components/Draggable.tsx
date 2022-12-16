@@ -41,8 +41,7 @@ const Draggable = (props) => {
         // current position and new position
         let position = tPosSN(item.key);
         let newPosition = { x: position.y + positionMovedX, y: position.x - positionMovedY };
-        let newPositionText = translatePositionNumberToText(newPosition);
-
+        let newPositionText = tPosNS({ x: newPosition.y, y: newPosition.x });
         let canMove = false;
 
         pan.flattenOffset();
@@ -134,17 +133,6 @@ const Draggable = (props) => {
 const styles = StyleSheet.create({ itemDraggable: { overflow: "hidden" } });
 
 const getPositionPixeles = (key, size) => ({ x: tPosSN(key).y * size, y: 7 * size - tPosSN(key).x * size });
-
-const translatePositionNumberToText = (position) => {
-  let y = position.y;
-  let x = position.x;
-  if (position.y < 0) y = 0;
-  if (position.y > 7) y = 7;
-  if (position.x < 0) x = 0;
-  if (position.x > 7) x = 7;
-
-  return `${y + 1}${letters[x]}`;
-};
 
 function mapStateToProps(state, props) {
   return {
