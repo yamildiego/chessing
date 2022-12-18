@@ -6,12 +6,15 @@ import { Button } from "@react-native-material/core";
 import { secondaryColor, textColor } from "../Constants/MyColors";
 import logo from "../../assets/icon.png";
 
-import * as game from "../Actions/game";
+import * as config from "../Actions/config";
 
 const size = Math.round(Dimensions.get("window").width * 0.06);
 
 class HomeScreen extends Component {
-  openGameLocal = () => this.props.navigation.navigate("ConfigLocalGameScreen");
+  openGameLocal = () => {
+    this.props.inizialize();
+    this.props.navigation.navigate("ConfigLocalGameScreen");
+  };
 
   render() {
     return (
@@ -84,7 +87,7 @@ function mapStateToProps(state, props) {
 }
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
-  inizialize: game.inizializeConfig,
+  inizialize: config.inizializeConfig,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

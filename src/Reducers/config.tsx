@@ -1,0 +1,21 @@
+import cloneDeep from "lodash/cloneDeep";
+import * as TYPES from "./types";
+
+const initialState = {
+  show_legal_moves: true,
+  time_per_player: 600000,
+};
+
+export default function config(state = initialState, action = {}) {
+  const newState = cloneDeep(state);
+  switch (action.type) {
+    case TYPES.INITIALIZE_CONFIG:
+      return initialState;
+    case TYPES.SET_SHOW_LEGAL_MOVES:
+      return { ...newState, show_legal_moves: action.value };
+    case TYPES.SET_TIME_PER_PLAY:
+      return { ...newState, time_per_player: action.value };
+    default:
+      return state;
+  }
+}

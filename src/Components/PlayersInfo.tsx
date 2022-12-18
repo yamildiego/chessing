@@ -1,16 +1,17 @@
-import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 
 import PlayerInfo from "./PlayerInfo";
 
 const PlayersInfo = (props) => {
-  const transformFlip = { transform: !props.executeFunc ? [{ scaleX: -1 }, { scaleY: -1 }] : [] };
+  const { executeFunc } = props;
+  const transformFlip = { transform: !executeFunc ? [{ scaleX: -1 }, { scaleY: -1 }] : [] };
 
   return (
     <View style={{ ...transformFlip, ...styles.container }}>
       <View style={styles.subContainer}>
-        <PlayerInfo timePerPlayer={props.timePerPlayer} isPlaying={props.isPlaying == "W"} color="white" />
-        <PlayerInfo timePerPlayer={props.timePerPlayer} isPlaying={props.isPlaying == "B"} color="black" />
+        <PlayerInfo executeFunc={executeFunc} color="W" />
+        <PlayerInfo executeFunc={executeFunc} color="B" />
       </View>
     </View>
   );

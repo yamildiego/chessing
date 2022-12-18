@@ -4,7 +4,8 @@ import { HStack, Box, Divider, Button } from "@react-native-material/core";
 
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 
-import * as game from "../Actions/game";
+import * as config from "../Actions/config";
+import * as match from "../Actions/match";
 
 import background from "../Assets/background.jpg";
 import white from "../Assets/white.png";
@@ -24,7 +25,7 @@ class ConfigLocalGameScreen extends Component {
   };
 
   render() {
-    const { board, pieces, time_per_player, show_legal_moves } = this.props;
+    const { pieces, time_per_player, show_legal_moves } = this.props;
     return (
       <View style={styles.container}>
         <View>
@@ -101,16 +102,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state: AppState) => ({
-  board: state.game.board,
-  selected: state.game.selected,
-  show_legal_moves: state.game.show_legal_moves,
-  time_per_player: state.game.time_per_player,
+  show_legal_moves: state.config.show_legal_moves,
+  time_per_player: state.config.time_per_player,
 });
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
-  setShowLegalMoves: game.setShowLegalMoves,
-  setTimePerPlayer: game.setTimePerPlayer,
-  initializedBoard: game.initializedBoard,
+  setShowLegalMoves: config.setShowLegalMoves,
+  setTimePerPlayer: config.setTimePerPlayer,
+  initializedBoard: match.initializedBoard,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigLocalGameScreen);

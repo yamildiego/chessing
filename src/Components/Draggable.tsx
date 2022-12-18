@@ -2,15 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Animated, PanResponder, View, TouchableOpacity, Text, Easing, Dimensions } from "react-native";
 
 import { connect } from "react-redux";
-import * as game from "../Actions/game";
-import Chess, { tPosNS, tPosSN } from "yd-chess-lib";
-var { width, height } = Dimensions.get("window");
 
+import * as match from "../Actions/match";
+
+import Chess, { tPosNS, tPosSN } from "yd-chess-lib";
+
+var { width, height } = Dimensions.get("window");
 const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
-  const { item, selected, size, isDraggable, pieceMoved } = props;
+  const { item, square_selected, size, isDraggable, pieceMoved } = props;
 
   const pan = useRef(new Animated.ValueXY()).current;
   const panResponder = PanResponder.create({
@@ -19,7 +21,8 @@ const Draggable = (props) => {
     onPanResponderGrant: (evt, gestureState) => {
       setZIndex(1);
       pan.setOffset({ ...getPositionPixeles(item.key, size) });
-      if (selected == null || (selected !== null && selected.color === item.color && selected.key !== item.key)) props.setSelected(item);
+      if (square_selected == null || (square_selected !== null && square_selected.color === item.color && square_selected.key !== item.key))
+        props.setSquareSelected(item);
     },
     onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
       useNativeDriver: false,
@@ -29,7 +32,7 @@ const Draggable = (props) => {
     }),
     onPanResponderRelease: (evt, gestureState) => {
       setZIndex(1);
-      if (selected !== null && selected.key == item.key) {
+      if (square_selected !== null && square_selected.key == item.key) {
         const { pageX, pageY } = evt.nativeEvent;
         // pixeles moved
         let x = { ...pan.x };
@@ -54,7 +57,7 @@ const Draggable = (props) => {
           }).start();
           setTimeout(() => {
             Chess.getInstance().move(`${item.key}x${newPositionText}`);
-            props.setSelected(null);
+            props.setSquareSelected(null);
             props.switchPlayer();
           }, 150);
         } else {
@@ -64,7 +67,7 @@ const Draggable = (props) => {
           if (positionTest.y == position.y) {
             pan.setValue({ ...getPositionPixeles(item.key, size) });
           } else {
-            if (item.key !== newPositionText) props.setSelected(null);
+            if (item.key !== newPositionText) props.setSquareSelected(null);
 
             Animated.spring(pan, {
               toValue: { ...getPositionPixeles(item.key, size) },
@@ -89,7 +92,7 @@ const Draggable = (props) => {
       }).start(() => {
         setTimeout(() => {
           Chess.getInstance().move(`${pieceMoved.from}x${pieceMoved.to}`);
-          props.setSelected(null);
+          props.setSquareSelected(null);
           props.switchPlayer();
         }, 150);
       });
@@ -97,12 +100,12 @@ const Draggable = (props) => {
   }, [item, pieceMoved]);
 
   const tryToMove = (p_item) => {
-    if (selected !== null) {
-      if (selected.movementsAllowed.includes(p_item.key)) {
-        Chess.getInstance().move(`${selected.key}x${p_item.key}`);
+    if (square_selected !== null) {
+      if (square_selected.movementsAllowed.includes(p_item.key)) {
+        Chess.getInstance().move(`${square_selected.key}x${p_item.key}`);
         props.switchPlayer();
       }
-      props.setSelected(null);
+      props.setSquareSelected(null);
     }
   };
 
@@ -136,13 +139,13 @@ const getPositionPixeles = (key, size) => ({ x: tPosSN(key).y * size, y: 7 * siz
 
 function mapStateToProps(state, props) {
   return {
-    selected: state.game.selected,
+    square_selected: state.match.square_selected,
   };
 }
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
-  setSelected: game.setSelected,
-  switchPlayer: game.switchPlayer,
+  setSquareSelected: match.setSquareSelected,
+  switchPlayer: match.switchPlayer,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Draggable);

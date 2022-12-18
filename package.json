@@ -36,7 +36,7 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.2",
     "yd-chess-lib": "^1.4.35",
-    "yd-react-native-countdown": "^1.2.7"
+    "yd-react-native-countdown": "^1.2.9"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

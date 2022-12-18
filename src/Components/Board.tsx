@@ -6,7 +6,8 @@ import { Dimensions } from "react-native";
 import Draggable from "./Draggable";
 import Piece from "./Piece";
 
-import * as game from "../Actions/game";
+import * as match from "../Actions/match";
+import * as config from "../Actions/config";
 
 import white from "../Assets/white.png";
 import black from "../Assets/black.png";
@@ -14,34 +15,33 @@ import black from "../Assets/black.png";
 import Chess, { tPosSN, tPosNS } from "yd-chess-lib";
 
 const Board = (props) => {
-  const { board, pieces, is_playing } = props;
+  const { board, pieces, is_playing, square_selected, show_legal_moves, status } = props;
   const windowWidth = Dimensions.get("window").width;
   const size = Math.round(windowWidth * 0.1175);
   const [pieceMoved, setPieceMoved] = useState(null);
 
   const highlight = (number, letter) => {
-    const { selected, show_legal_moves } = props;
     return (
       show_legal_moves &&
-      selected != null &&
-      selected.movementsAllowed.length > 0 &&
-      selected.movementsAllowed.includes(`${8 - number}${letter}`)
+      square_selected != null &&
+      square_selected.movementsAllowed.length > 0 &&
+      square_selected.movementsAllowed.includes(`${8 - number}${letter}`)
     );
   };
 
-  const isSelected = (number, letter) => props.show_legal_moves && props.selected != null && props.selected.key == `${8 - number}${letter}`;
+  const isSelected = (number, letter) => show_legal_moves && square_selected != null && square_selected.key == `${8 - number}${letter}`;
 
   const tryToMove = (number, letter) => {
     let posString = `${8 - number}${letter}`;
     let posNumber = tPosSN(posString);
     let square = Chess.getInstance().getSquare(posString);
-    if (props.selected !== null && square == null) {
-      if (props.selected.movementsAllowed.includes(posString)) {
-        setPieceMoved({ from: props.selected.key, to: posString });
-        // setPieceMoved(`${props.selected.key}x${posString}`);
+    if (square_selected !== null && square == null) {
+      if (square_selected.movementsAllowed.includes(posString)) {
+        setPieceMoved({ from: square_selected.key, to: posString });
+        // setPieceMoved(`${square_selected.key}x${posString}`);
         //this var is becose the animation. I'll move inside
       }
-      props.setSelected(null);
+      props.setSquareSelected(null);
     }
   };
 
@@ -85,7 +85,7 @@ const Board = (props) => {
               row.map((item, indexY) => {
                 return (
                   <Draggable
-                    isDraggable={item !== null && item.color === is_playing && item.movementsAllowed.length > 0}
+                    isDraggable={item !== null && item.color === is_playing && item.movementsAllowed.length > 0 && status == null}
                     size={size}
                     index={1}
                     item={item}
@@ -119,15 +119,15 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state: AppState) => ({
   board: state.game.board,
-  selected: state.game.selected,
-  is_playing: state.game.is_playing,
-  show_legal_moves: state.game.show_legal_moves,
+  is_playing: state.match.is_playing,
+  square_selected: state.match.square_selected,
+  status: state.match.status,
+  show_legal_moves: state.config.show_legal_moves,
 });
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
-  setSelected: game.setSelected,
-  switchPlayer: game.switchPlayer,
-  setInitializedBoard: game.setInitializedBoard,
+  setSquareSelected: match.setSquareSelected,
+  switchPlayer: match.switchPlayer,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Board);
