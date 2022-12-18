@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 import Countdown from "yd-react-native-countdown";
@@ -18,13 +18,11 @@ const PlayerInfo = (props) => {
     props.setModalVisible(true);
   };
 
-  // const [visible, setVisible] = useState(false);
-
   return (
     <View style={{ ...styles.container, ...stylesContainer }}>
       <Text style={{ ...styles.text, ...stylesText }}>Player: {fullNameColor.toUpperCase()}</Text>
       <Countdown
-        from={10000}
+        from={time_per_player}
         isRunning={is_playing == color && status == null}
         style={styles.countdown}
         callback={() => (executeFunc ? callbackTimeout() : null)}

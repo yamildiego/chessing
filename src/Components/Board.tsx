@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, ImageBackground, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, ImageBackground, TouchableOpacity } from "react-native";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 import { Dimensions } from "react-native";
 
@@ -25,22 +25,20 @@ const Board = (props) => {
       show_legal_moves &&
       square_selected != null &&
       square_selected.movementsAllowed.length > 0 &&
-      square_selected.movementsAllowed.includes(`${8 - number}${letter}`)
+      square_selected.movementsAllowed.includes(`${8 - number}${letter}`) &&
+      status == null
     );
   };
 
-  const isSelected = (number, letter) => show_legal_moves && square_selected != null && square_selected.key == `${8 - number}${letter}`;
+  const isSelected = (number, letter) =>
+    show_legal_moves && square_selected != null && status == null && square_selected.key == `${8 - number}${letter}`;
 
   const tryToMove = (number, letter) => {
     let posString = `${8 - number}${letter}`;
     let posNumber = tPosSN(posString);
     let square = Chess.getInstance().getSquare(posString);
     if (square_selected !== null && square == null) {
-      if (square_selected.movementsAllowed.includes(posString)) {
-        setPieceMoved({ from: square_selected.key, to: posString });
-        // setPieceMoved(`${square_selected.key}x${posString}`);
-        //this var is becose the animation. I'll move inside
-      }
+      if (square_selected.movementsAllowed.includes(posString)) setPieceMoved({ from: square_selected.key, to: posString });
       props.setSquareSelected(null);
     }
   };

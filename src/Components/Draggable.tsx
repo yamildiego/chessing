@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Animated, PanResponder, View, TouchableOpacity, Text, Easing, Dimensions } from "react-native";
+import { StyleSheet, Animated, PanResponder, View, TouchableOpacity, Text } from "react-native";
 
 import { connect } from "react-redux";
 
@@ -7,12 +7,11 @@ import * as match from "../Actions/match";
 
 import Chess, { tPosNS, tPosSN } from "yd-chess-lib";
 
-var { width, height } = Dimensions.get("window");
 const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
-  const { item, square_selected, size, isDraggable, pieceMoved } = props;
+  const { item, square_selected, size, isDraggable, pieceMoved, status } = props;
 
   const pan = useRef(new Animated.ValueXY()).current;
   const panResponder = PanResponder.create({
@@ -50,7 +49,7 @@ const Draggable = (props) => {
         pan.flattenOffset();
 
         //evaluate if its allow to move at the new squeare
-        if (item !== null && item.movementsAllowed.includes(newPositionText)) {
+        if (item !== null && item.movementsAllowed.includes(newPositionText) && status == null) {
           Animated.spring(pan, {
             toValue: { ...getPositionPixeles(newPositionText, size) },
             useNativeDriver: false,
@@ -82,7 +81,7 @@ const Draggable = (props) => {
   useEffect(() => {
     if (item !== null) pan.setValue({ ...getPositionPixeles(item.key, size) });
 
-    if (pieceMoved !== null && item !== null && pieceMoved.from === item.key) {
+    if (pieceMoved !== null && item !== null && pieceMoved.from === item.key && status == null) {
       Animated.spring(pan, {
         toValue: { ...getPositionPixeles(pieceMoved.to, size) },
         useNativeDriver: false,
@@ -100,7 +99,7 @@ const Draggable = (props) => {
   }, [item, pieceMoved]);
 
   const tryToMove = (p_item) => {
-    if (square_selected !== null) {
+    if (square_selected !== null && status == null) {
       if (square_selected.movementsAllowed.includes(p_item.key)) {
         Chess.getInstance().move(`${square_selected.key}x${p_item.key}`);
         props.switchPlayer();
@@ -140,6 +139,7 @@ const getPositionPixeles = (key, size) => ({ x: tPosSN(key).y * size, y: 7 * siz
 function mapStateToProps(state, props) {
   return {
     square_selected: state.match.square_selected,
+    status: state.match.status,
   };
 }
 
