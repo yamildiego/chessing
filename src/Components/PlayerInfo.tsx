@@ -25,6 +25,7 @@ const PlayerInfo = (props) => {
         from={time_per_player}
         isRunning={is_playing == color && status == null}
         style={styles.countdown}
+        beatEffectAtTheEnd={true}
         callback={() => (executeFunc ? callbackTimeout() : null)}
         styleText={{ ...styles.countdownText, ...stylesCountdownText }}
       />
