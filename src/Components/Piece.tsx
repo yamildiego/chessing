@@ -2,7 +2,7 @@ import React, { Component, useRef, useEffect } from "react";
 import { View, Text, Animated } from "react-native";
 
 import { FontAwesome5 } from "@expo/vector-icons";
-import { TypeOfPiece } from "yd-chess-lib";
+import { TypeOfPiece, Color } from "yd-chess-lib";
 
 const pieces = {
   [TypeOfPiece.PAWN]: "chess-pawn",
@@ -21,14 +21,14 @@ const Piece = (props) => {
   };
 
   const onPress = (color) => {
-    if (color === "W")
+    if (color === Color.WHITE)
       Animated.timing(scaleAnimated.current, {
         duration: 300,
         toValue: 1,
         useNativeDriver: false,
       }).start();
 
-    if (color === "B")
+    if (color === Color.BLACK)
       Animated.timing(scaleAnimated.current, {
         duration: 300,
         toValue: -1,
@@ -50,14 +50,14 @@ const Piece = (props) => {
         }}
       >
         <FontAwesome5
-          style={{ color: props.piece.color === "B" ? "white" : "black" }}
+          style={{ color: props.piece.color === Color.BLACK ? "white" : "black" }}
           name={pieces[props.piece.type]}
           size={props.size * 0.58}
         />
       </Text>
       <Text style={{ position: "absolute", width: props.size, textAlign: "center", top: props.size * 0.192 }}>
         <FontAwesome5
-          style={{ color: props.piece.color === "W" ? "white" : "black" }}
+          style={{ color: props.piece.color === Color.WHITE ? "white" : "black" }}
           name={pieces[props.piece.type]}
           size={props.size * 0.58}
         />

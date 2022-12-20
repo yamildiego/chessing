@@ -3,11 +3,12 @@ import { Button } from "@react-native-material/core";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 
 import * as match from "../Actions/match";
+import { Color } from "yd-chess-lib";
 
 const ModalWins = (props) => {
   const { winner, modalVisible, status } = props;
-  const Tcolor = winner === "B" ? "#fff" : "#343434";
-  const bgColor = winner === "B" ? "#343434" : "#fff";
+  const Tcolor = winner === Color.BLACK ? "#fff" : "#343434";
+  const bgColor = winner === Color.BLACK ? "#343434" : "#fff";
 
   const backHome = () => props.navigation.navigate("HomeScreen");
   const rematch = () => props.navigation.navigate("ConfigLocalGameScreen");
@@ -28,7 +29,7 @@ const ModalWins = (props) => {
             <Text style={{ ...styles.modalTimes, color: Tcolor }}>X</Text>
           </TouchableOpacity>
           <Text style={{ ...styles.modalTitle, backgroundColor: bgColor, color: Tcolor }}>{`${
-            winner === "B" ? `Blacks` : `Whites`
+            winner === Color.BLACK ? `Blacks` : `Whites`
           } wins!`}</Text>
           <Text style={{ ...styles.modalSubtitle, backgroundColor: bgColor, color: Tcolor }}>By {status}</Text>
           <View style={{ ...styles.modalBody, backgroundColor: Tcolor }}>

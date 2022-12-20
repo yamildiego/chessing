@@ -2,19 +2,20 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 import Countdown from "yd-react-native-countdown";
+import { Color } from "yd-chess-lib";
 
 import * as match from "../Actions/match";
 
 const PlayerInfo = (props) => {
   const { is_playing, time_per_player, executeFunc, color, status } = props;
-  const fullNameColor = is_playing == "B" ? "black" : "white";
+  const fullNameColor = is_playing == Color.BLACK ? "black" : "white";
   const stylesContainer = is_playing == color ? { backgroundColor: fullNameColor, borderColor: fullNameColor } : {};
-  const stylesText = is_playing == color ? { color: color == "B" ? "#fff" : "#444" } : {};
-  const stylesCountdownText = is_playing == color ? { color: color == "B" ? "#fff" : "#444" } : {};
+  const stylesText = is_playing == color ? { color: color == Color.BLACK ? "#fff" : "#444" } : {};
+  const stylesCountdownText = is_playing == color ? { color: color == Color.BLACK ? "#fff" : "#444" } : {};
 
   const callbackTimeout = () => {
-    props.setWinner(is_playing == "B" ? "W" : "B");
-    props.setStatus("timeout");
+    props.setWinner(is_playing == Color.BLACK ? Color.WHITE : Color.BLACK);
+    props.setStatus("Timeout");
     props.setModalVisible(true);
   };
 

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 
 import * as match from "../Actions/match";
 
-import Chess, { tPosNS, tPosSN } from "yd-chess-lib";
+import Chess, { tPosNS, tPosSN, Color } from "yd-chess-lib";
 
 const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
@@ -55,9 +55,7 @@ const Draggable = (props) => {
             useNativeDriver: false,
           }).start();
           setTimeout(() => {
-            Chess.getInstance().move(`${item.key}x${newPositionText}`);
-            props.setSquareSelected(null);
-            props.switchPlayer();
+            movePiece(`${item.key}x${newPositionText}`);
           }, 150);
         } else {
           let positionTest = { x: 8 - positionMovedY, y: positionMovedX };
@@ -78,6 +76,17 @@ const Draggable = (props) => {
     },
   });
 
+  const movePiece = (p_movement: string) => {
+    Chess.getInstance().move(p_movement);
+    let isInCheckMate = Chess.getInstance().isInCheckMate(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
+    props.setSquareSelected(null);
+    if (isInCheckMate) {
+      props.setWinner(item.color);
+      props.setStatus("Checkmate");
+      props.setModalVisible(true);
+    } else props.switchPlayer();
+  };
+
   useEffect(() => {
     if (item !== null) pan.setValue({ ...getPositionPixeles(item.key, size) });
 
@@ -90,9 +99,7 @@ const Draggable = (props) => {
         restDisplacementThreshold: 15,
       }).start(() => {
         setTimeout(() => {
-          Chess.getInstance().move(`${pieceMoved.from}x${pieceMoved.to}`);
-          props.setSquareSelected(null);
-          props.switchPlayer();
+          movePiece(`${pieceMoved.from}x${pieceMoved.to}`);
         }, 150);
       });
     }
@@ -100,10 +107,7 @@ const Draggable = (props) => {
 
   const tryToMove = (p_item) => {
     if (square_selected !== null && status == null) {
-      if (square_selected.movementsAllowed.includes(p_item.key)) {
-        Chess.getInstance().move(`${square_selected.key}x${p_item.key}`);
-        props.switchPlayer();
-      }
+      if (square_selected.movementsAllowed.includes(p_item.key)) movePiece(`${square_selected.key}x${p_item.key}`);
       props.setSquareSelected(null);
     }
   };
@@ -146,6 +150,9 @@ function mapStateToProps(state, props) {
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setSquareSelected: match.setSquareSelected,
   switchPlayer: match.switchPlayer,
+  setWinner: match.setWinner,
+  setStatus: match.setStatus,
+  setModalVisible: match.setModalVisible,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Draggable);

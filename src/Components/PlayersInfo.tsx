@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { Color } from "yd-chess-lib";
 
 import PlayerInfo from "./PlayerInfo";
 
@@ -10,8 +11,8 @@ const PlayersInfo = (props) => {
   return (
     <View style={{ ...transformFlip, ...styles.container }}>
       <View style={styles.subContainer}>
-        <PlayerInfo executeFunc={executeFunc} color="W" />
-        <PlayerInfo executeFunc={executeFunc} color="B" />
+        <PlayerInfo executeFunc={executeFunc} color={Color.WHITE} />
+        <PlayerInfo executeFunc={executeFunc} color={Color.BLACK} />
       </View>
     </View>
   );
