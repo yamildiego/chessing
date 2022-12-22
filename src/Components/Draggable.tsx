@@ -20,7 +20,11 @@ const Draggable = (props) => {
     onPanResponderGrant: (evt, gestureState) => {
       setZIndex(1);
       pan.setOffset({ ...getPositionPixeles(item.key, size) });
-      if (square_selected == null || (square_selected !== null && square_selected.color === item.color && square_selected.key !== item.key))
+      if (square_selected !== null && item !== null && Chess.getInstance().isCasteling(square_selected.key, item.key)) tryToMove(item);
+      else if (
+        square_selected == null ||
+        (square_selected !== null && square_selected.color === item.color && square_selected.key !== item.key)
+      )
         props.setSquareSelected(item);
     },
     onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
@@ -79,7 +83,13 @@ const Draggable = (props) => {
   const movePiece = (p_movement: string) => {
     Chess.getInstance().move(p_movement);
     let isInCheckMate = Chess.getInstance().isInCheckMate(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
+    let isDraw = Chess.getInstance().isDraw(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
     props.setSquareSelected(null);
+    if (isDraw != null) {
+      props.setWinner("none");
+      props.setStatus(isDraw);
+      props.setModalVisible(true);
+    }
     if (isInCheckMate) {
       props.setWinner(item.color);
       props.setStatus("Checkmate");

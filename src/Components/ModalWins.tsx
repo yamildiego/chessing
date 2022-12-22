@@ -28,10 +28,21 @@ const ModalWins = (props) => {
           <TouchableOpacity onPress={() => props.setModalVisible(false)} style={styles.modalClose}>
             <Text style={{ ...styles.modalTimes, color: Tcolor }}>X</Text>
           </TouchableOpacity>
-          <Text style={{ ...styles.modalTitle, backgroundColor: bgColor, color: Tcolor }}>{`${
-            winner === Color.BLACK ? `Blacks` : `Whites`
-          } wins!`}</Text>
-          <Text style={{ ...styles.modalSubtitle, backgroundColor: bgColor, color: Tcolor }}>By {status}</Text>
+
+          {(status == "Checkmate" || status == "Timeout") && (
+            <>
+              <Text style={{ ...styles.modalTitle, backgroundColor: bgColor, color: Tcolor }}>{`${
+                winner === Color.BLACK ? `Blacks` : `Whites`
+              } wins!`}</Text>
+              <Text style={{ ...styles.modalSubtitle, backgroundColor: bgColor, color: Tcolor }}>By {status}</Text>
+            </>
+          )}
+          {status !== "Checkmate" && status !== "Timeout" && (
+            <>
+              <Text style={{ ...styles.modalTitle, backgroundColor: bgColor, color: Tcolor }}>{`Draw`}</Text>
+              <Text style={{ ...styles.modalSubtitle, backgroundColor: bgColor, color: Tcolor }}>By {status}</Text>
+            </>
+          )}
           <View style={{ ...styles.modalBody, backgroundColor: Tcolor }}>
             <View style={styles.buttons}>
               <Button
