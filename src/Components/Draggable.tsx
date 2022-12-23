@@ -85,16 +85,9 @@ const Draggable = (props) => {
     let isInCheckMate = Chess.getInstance().isInCheckMate(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
     let isDraw = Chess.getInstance().isDraw(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
     props.setSquareSelected(null);
-    if (isDraw != null) {
-      props.setWinner("none");
-      props.setStatus(isDraw);
-      props.setModalVisible(true);
-    }
-    if (isInCheckMate) {
-      props.setWinner(item.color);
-      props.setStatus("Checkmate");
-      props.setModalVisible(true);
-    } else props.switchPlayer();
+    if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
+    if (isInCheckMate) props.setDataFinished({ status: "Checkmate", winner: item.color, modal_visible: true });
+    else props.switchPlayer();
   };
 
   useEffect(() => {
@@ -160,9 +153,7 @@ function mapStateToProps(state, props) {
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setSquareSelected: match.setSquareSelected,
   switchPlayer: match.switchPlayer,
-  setWinner: match.setWinner,
-  setStatus: match.setStatus,
-  setModalVisible: match.setModalVisible,
+  setDataFinished: match.setDataFinished,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Draggable);

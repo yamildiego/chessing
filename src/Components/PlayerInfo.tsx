@@ -13,11 +13,12 @@ const PlayerInfo = (props) => {
   const stylesText = is_playing == color ? { color: color == Color.BLACK ? "#fff" : "#444" } : {};
   const stylesCountdownText = is_playing == color ? { color: color == Color.BLACK ? "#fff" : "#444" } : {};
 
-  const callbackTimeout = () => {
-    props.setWinner(is_playing == Color.BLACK ? Color.WHITE : Color.BLACK);
-    props.setStatus("Timeout");
-    props.setModalVisible(true);
-  };
+  const callbackTimeout = () =>
+    props.setDataFinished({
+      status: "Timeout",
+      winner: is_playing == Color.BLACK ? Color.WHITE : Color.BLACK,
+      modal_visible: true,
+    });
 
   return (
     <View style={{ ...styles.container, ...stylesContainer }}>
@@ -62,13 +63,11 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state: AppState) => ({
   is_playing: state.match.is_playing,
   time_per_player: state.config.time_per_player,
-  status: state.match.status,
+  status: state.match.data_finished.status,
 });
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
-  setWinner: match.setWinner,
-  setStatus: match.setStatus,
-  setModalVisible: match.setModalVisible,
+  setDataFinished: match.setDataFinished,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayerInfo);

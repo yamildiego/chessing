@@ -6,7 +6,7 @@ import * as match from "../Actions/match";
 import { Color } from "yd-chess-lib";
 
 const ModalWins = (props) => {
-  const { winner, modalVisible, status } = props;
+  const { winner, modal_visible, status } = props;
   const Tcolor = winner === Color.BLACK ? "#fff" : "#343434";
   const bgColor = winner === Color.BLACK ? "#343434" : "#fff";
 
@@ -17,19 +17,14 @@ const ModalWins = (props) => {
     <Modal
       animationType="none"
       transparent={true}
-      visible={modalVisible}
+      visible={modal_visible}
       onRequestClose={() => {
         // Alert.alert("Modal has been closed.");
-        // setModalVisible(!modalVisible);
       }}
     >
       <View style={styles.centeredView}>
         <View style={{ ...styles.modalView, backgroundColor: bgColor }}>
-          <TouchableOpacity onPress={() => props.setModalVisible(false)} style={styles.modalClose}>
-            <Text style={{ ...styles.modalTimes, color: Tcolor }}>X</Text>
-          </TouchableOpacity>
-
-          {(status == "Checkmate" || status == "Timeout") && (
+          {(status == "Checkmate" || status == "Timeout" || status == "Resign") && (
             <>
               <Text style={{ ...styles.modalTitle, backgroundColor: bgColor, color: Tcolor }}>{`${
                 winner === Color.BLACK ? `Blacks` : `Whites`
@@ -37,7 +32,7 @@ const ModalWins = (props) => {
               <Text style={{ ...styles.modalSubtitle, backgroundColor: bgColor, color: Tcolor }}>By {status}</Text>
             </>
           )}
-          {status !== "Checkmate" && status !== "Timeout" && (
+          {status !== "Checkmate" && status !== "Timeout" && status !== "Resign" && (
             <>
               <Text style={{ ...styles.modalTitle, backgroundColor: bgColor, color: Tcolor }}>{`Draw`}</Text>
               <Text style={{ ...styles.modalSubtitle, backgroundColor: bgColor, color: Tcolor }}>By {status}</Text>
@@ -141,13 +136,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state: AppState) => ({
-  status: state.match.status,
-  winner: state.match.winner,
-  modalVisible: state.match.modalVisible,
+  status: state.match.data_finished.status,
+  winner: state.match.data_finished.winner,
+  modal_visible: state.match.data_finished.modal_visible,
 });
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
-  setModalVisible: match.setModalVisible,
-};
+const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalWins);

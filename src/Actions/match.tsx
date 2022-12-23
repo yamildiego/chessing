@@ -13,17 +13,12 @@ export const switchPlayer = () => ({
   type: TYPES.SWITCH_PLAYER,
 });
 
-export const setStatus = (value) => ({
-  type: TYPES.SET_STATUS,
+export const setDataFinished = (value) => ({
+  type: TYPES.SET_DATA_FINISHED,
   value,
 });
 
-export const setWinner = (value) => ({
-  type: TYPES.SET_WINNER,
-  value,
-});
-
-export const setModalVisible = (value) => ({
-  type: TYPES.SET_MODAL_VISIBLE,
+export const setOfferADraw = (value) => ({
+  type: TYPES.SET_OFFER_A_DRAW,
   value,
 });
