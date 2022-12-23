@@ -1,18 +1,19 @@
 import React from "react";
+import { connect } from "react-redux";
 import { StyleSheet, View } from "react-native";
 import { Color } from "yd-chess-lib";
 
 import PlayerInfo from "./PlayerInfo";
 
 const PlayersInfo = (props) => {
-  const { executeFunc } = props;
-  const transformFlip = { transform: !executeFunc ? [{ scaleX: -1 }, { scaleY: -1 }] : [] };
+  const { sizeScreen, marginScreen, playerMain } = props;
+  const transformFlip = { transform: !playerMain ? [{ scaleX: -1 }, { scaleY: -1 }] : [] };
 
   return (
-    <View style={{ ...transformFlip, ...styles.container }}>
+    <View style={{ ...transformFlip, width: sizeScreen }}>
       <View style={styles.subContainer}>
-        <PlayerInfo executeFunc={executeFunc} color={Color.WHITE} />
-        <PlayerInfo executeFunc={executeFunc} color={Color.BLACK} />
+        <PlayerInfo playerMain={playerMain} color={Color.WHITE} />
+        <PlayerInfo playerMain={playerMain} color={Color.BLACK} />
       </View>
     </View>
   );
@@ -20,14 +21,20 @@ const PlayersInfo = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     width: "100%",
-    maxWidth: 380,
   },
   subContainer: {
     flexDirection: "row",
-    marginTop: 20,
+    marginTop: 3,
+    marginBottom: 5,
   },
 });
 
-export default PlayersInfo;
+function mapStateToProps(state, props) {
+  return {
+    sizeScreen: state.visual.sizeScreen,
+    marginScreen: state.visual.marginScreen,
+  };
+}
+
+export default connect(mapStateToProps)(PlayersInfo);

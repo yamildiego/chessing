@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ImageBackground, TouchableOpacity } from "react-native";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
-import { Dimensions } from "react-native";
 
 import Draggable from "./Draggable";
 import Piece from "./Piece";
@@ -15,9 +14,7 @@ import black from "../Assets/black.png";
 import Chess, { tPosSN, tPosNS } from "yd-chess-lib";
 
 const Board = (props) => {
-  const { board, pieces, is_playing, square_selected, show_legal_moves, status } = props;
-  const windowWidth = Dimensions.get("window").width;
-  const size = Math.round(windowWidth * 0.1175);
+  const { board, pieces, is_playing, square_selected, show_legal_moves, status, sizeSquare } = props;
   const [pieceMoved, setPieceMoved] = useState(null);
 
   const highlight = (number, letter) => {
@@ -55,15 +52,15 @@ const Board = (props) => {
                   return (
                     <TouchableOpacity key={`Item_${indexItem}`} activeOpacity={1} onPress={() => tryToMove(number, letter)}>
                       <ImageBackground source={(number + indexItem) % 2 == 0 ? white : black} resizeMode="cover" style={styles.image}>
-                        <View style={{ width: size, height: size }}>
-                          {highlight(number, letter) && <View style={{ ...styles.highlight, height: size - 20 }} />}
+                        <View style={{ width: sizeSquare, height: sizeSquare }}>
+                          {highlight(number, letter) && <View style={{ ...styles.highlight, height: sizeSquare - 20 }} />}
                           {isSelected(number, letter) && (
                             <View
                               style={{
                                 ...styles.highlight,
                                 margin: 5,
-                                width: size - 10,
-                                height: size - 10,
+                                width: sizeSquare - 10,
+                                height: sizeSquare - 10,
                                 backgroundColor: "#44444455",
                               }}
                             />
@@ -84,13 +81,13 @@ const Board = (props) => {
                 return (
                   <Draggable
                     isDraggable={item !== null && item.color === is_playing && item.movementsAllowed.length > 0 && status == null}
-                    size={size}
+                    size={sizeSquare}
                     index={1}
                     item={item}
                     pieceMoved={pieceMoved}
                     key={`item_${indexX}_${indexY}`}
                   >
-                    <Piece size={size} piece={item} is_playing={is_playing} />
+                    <Piece size={sizeSquare} piece={item} is_playing={is_playing} />
                   </Draggable>
                 );
               })
@@ -121,6 +118,7 @@ const mapStateToProps = (state: AppState) => ({
   square_selected: state.match.square_selected,
   status: state.match.status,
   show_legal_moves: state.config.show_legal_moves,
+  sizeSquare: state.visual.sizeSquare,
 });
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {

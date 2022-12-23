@@ -7,7 +7,7 @@ import { Color } from "yd-chess-lib";
 import * as match from "../Actions/match";
 
 const PlayerInfo = (props) => {
-  const { is_playing, time_per_player, executeFunc, color, status } = props;
+  const { is_playing, time_per_player, playerMain, color, status } = props;
   const fullNameColor = is_playing == Color.BLACK ? "black" : "white";
   const stylesContainer = is_playing == color ? { backgroundColor: fullNameColor, borderColor: fullNameColor } : {};
   const stylesText = is_playing == color ? { color: color == Color.BLACK ? "#fff" : "#444" } : {};
@@ -27,7 +27,7 @@ const PlayerInfo = (props) => {
         isRunning={is_playing == color && status == null}
         style={styles.countdown}
         beatEffectAtTheEnd={true}
-        callback={() => (executeFunc ? callbackTimeout() : null)}
+        callback={() => (playerMain ? callbackTimeout() : null)}
         styleText={{ ...styles.countdownText, ...stylesCountdownText }}
       />
     </View>
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#D9D9D9",
     borderColor: "#D9D9D9",
-    width: "50%",
+    flex: 1,
     borderWidth: 2,
   },
   text: {
