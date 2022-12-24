@@ -16,22 +16,7 @@ const Options = (props) => {
     ]);
   };
 
-  const resign = () => {
-    Alert.alert("Resign Game", "Are you sure?", [
-      {
-        text: "OK",
-        onPress: () => {
-          props.setOfferADraw(false);
-          props.setDataFinished({
-            status: "Resign",
-            winner: is_playing == Color.WHITE ? Color.BLACK : Color.WHITE,
-            modal_visible: true,
-          });
-        },
-      },
-      { text: "Cancel", onPress: () => {} },
-    ]);
-  };
+  const resign = () => props.setAskForResign(true);
 
   const disabledStyle = is_playing !== color ? { color: "#979797", backgroundColor: "#D9D9D9" } : {};
 
@@ -74,6 +59,7 @@ function mapStateToProps(state, props) {
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setOfferADraw: match.setOfferADraw,
+  setAskForResign: match.setAskForResign,
   setDataFinished: match.setDataFinished,
 };
 

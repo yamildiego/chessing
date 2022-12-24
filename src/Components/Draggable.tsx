@@ -13,6 +13,8 @@ const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
   const { item, square_selected, size, isDraggable, pieceMoved, status } = props;
 
+  const getOpponent = (color: Color) => (color == Color.WHITE ? Color.BLACK : Color.WHITE);
+
   const pan = useRef(new Animated.ValueXY()).current;
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: (evt, gestureState) => true,
@@ -59,7 +61,7 @@ const Draggable = (props) => {
             useNativeDriver: false,
           }).start();
           setTimeout(() => {
-            movePiece(`${item.key}x${newPositionText}`);
+            movePiece(`${item.key}x${newPositionText}`, item.color, getOpponent(item.color));
           }, 150);
         } else {
           let positionTest = { x: 8 - positionMovedY, y: positionMovedX };
@@ -80,15 +82,15 @@ const Draggable = (props) => {
     },
   });
 
-  const movePiece = (p_movement: string) => {
+  const movePiece = (p_movement: string, colorCurrentPlayer: Color, colorOpponent: Color) => {
     Chess.getInstance().move(p_movement);
     props.setSquareSelected(null);
     if (Chess.getInstance().hasToPromoteAPawn()) props.setPawnPromotionPosition(p_movement);
     else {
-      let isInCheckMate = Chess.getInstance().isInCheckMate(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
-      let isDraw = Chess.getInstance().isDraw(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
+      let isInCheckMate = Chess.getInstance().isInCheckMate(colorOpponent);
+      let isDraw = Chess.getInstance().isDraw(colorOpponent);
       if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
-      if (isInCheckMate) props.setDataFinished({ status: "Checkmate", winner: item.color, modal_visible: true });
+      if (isInCheckMate) props.setDataFinished({ status: "Checkmate", winner: colorCurrentPlayer, modal_visible: true });
       else props.switchPlayer();
     }
   };
@@ -105,7 +107,7 @@ const Draggable = (props) => {
         restDisplacementThreshold: 15,
       }).start(() => {
         setTimeout(() => {
-          movePiece(`${pieceMoved.from}x${pieceMoved.to}`);
+          movePiece(`${pieceMoved.from}x${pieceMoved.to}`, item.color, getOpponent(item.color));
         }, 150);
       });
     }
@@ -113,7 +115,8 @@ const Draggable = (props) => {
 
   const tryToMove = (p_item) => {
     if (square_selected !== null && status == null) {
-      if (square_selected.movementsAllowed.includes(p_item.key)) movePiece(`${square_selected.key}x${p_item.key}`);
+      if (square_selected.movementsAllowed.includes(p_item.key))
+        movePiece(`${square_selected.key}x${p_item.key}`, square_selected.color, getOpponent(square_selected.color));
       props.setSquareSelected(null);
     }
   };

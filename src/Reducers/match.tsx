@@ -8,6 +8,7 @@ const initialState = {
   is_playing: Color.WHITE,
   data_finished: { status: null, winner: null, modal_visible: false },
   offer_a_draw: false,
+  ask_for_resign: false,
   pawn_promotion_position: null,
 };
 
@@ -24,6 +25,8 @@ export default function game(state = initialState, action = {}) {
       return { ...newState, data_finished: { ...state.data_finished, ...action.value } };
     case TYPES.SET_OFFER_A_DRAW:
       return { ...newState, offer_a_draw: action.value };
+    case TYPES.SET_ASK_FOR_RESIGN:
+      return { ...newState, ask_for_resign: action.value };
     case TYPES.SET_PAWN_PROMOTION_POSITION:
       return { ...newState, pawn_promotion_position: action.value };
     default:

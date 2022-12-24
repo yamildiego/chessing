@@ -52,10 +52,31 @@ class LocalGameScreen extends React.Component {
     this.props.setDataFinished({ status: "Agreement", winner: "none", modal_visible: true });
   };
 
-  showAlert = () => {
+  showAlertOfferADraw = () => {
     Alert.alert(`Player offer you a draw`, "", [
       { text: "Yes", onPress: this.setDraw },
       { text: "No", onPress: () => this.props.setOfferADraw(false), style: "cancel" },
+    ]);
+  };
+
+  showAlertAskForResign = () => {
+    Alert.alert("Resign Game", "Are you sure?", [
+      {
+        text: "OK",
+        onPress: () => {
+          this.props.setOfferADraw(false);
+          this.props.setAskForResign(false);
+          this.props.setDataFinished({
+            status: "Resign",
+            winner: this.props.is_playing == Color.WHITE ? Color.BLACK : Color.WHITE,
+            modal_visible: true,
+          });
+        },
+      },
+      {
+        text: "Cancel",
+        onPress: () => this.props.setAskForResign(false),
+      },
     ]);
   };
 
@@ -64,7 +85,8 @@ class LocalGameScreen extends React.Component {
       <ImageBackground source={background} resizeMode="cover" style={styles.backgroundImage}>
         <ModalWins navigation={this.props.navigation} />
         <ModalPromotePawn />
-        {this.props.offer_a_draw ? this.showAlert() : ""}
+        {this.props.offer_a_draw ? this.showAlertOfferADraw() : ""}
+        {this.props.ask_for_resign ? this.showAlertAskForResign() : ""}
         <Options playerMain={false} color={Color.BLACK} />
         <PlayersInfo playerMain={false} />
         <Board />
@@ -87,6 +109,7 @@ const styles = StyleSheet.create({
 function mapStateToProps(state, props) {
   return {
     offer_a_draw: state.match.offer_a_draw,
+    ask_for_resign: state.match.ask_for_resign,
     is_playing: state.match.is_playing,
     winner: state.match.winner,
   };
@@ -94,6 +117,7 @@ function mapStateToProps(state, props) {
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setOfferADraw: match.setOfferADraw,
+  setAskForResign: match.setAskForResign,
   setDataFinished: match.setDataFinished,
 };
 

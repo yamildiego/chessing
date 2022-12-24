@@ -10,4 +10,6 @@ export const setDataFinished = (value) => ({ type: TYPES.SET_DATA_FINISHED, valu
 
 export const setOfferADraw = (value) => ({ type: TYPES.SET_OFFER_A_DRAW, value });
 
+export const setAskForResign = (value) => ({ type: TYPES.SET_ASK_FOR_RESIGN, value });
+
 export const setPawnPromotionPosition = (value) => ({ type: TYPES.SET_PAWN_PROMOTION_POSITION, value });

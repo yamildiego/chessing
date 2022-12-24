@@ -14,10 +14,10 @@ const ModalWins = (props) => {
 
   const backHome = () => props.navigation.navigate("HomeScreen");
   const rematch = () => props.navigation.navigate("ConfigLocalGameScreen");
-  const modalPressBack = () => {};
+  const onRequestClose = () => props.navigation.navigate("HomeScreen");
 
   return (
-    <MyModal visible={modal_visible} onRequestClose={modalPressBack}>
+    <MyModal visible={modal_visible} onRequestClose={onRequestClose}>
       <View style={styles.centeredView}>
         <View style={{ ...styles.modalView, backgroundColor: bgColor }}>
           {(status == "Checkmate" || status == "Timeout" || status == "Resign") && (

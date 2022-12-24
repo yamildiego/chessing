@@ -16,10 +16,7 @@ const ModalPromotePawn = (props) => {
 
   const onPress = (type: TypeOfPiece) => {
     let item = pawn_promotion_position.split("x")[1];
-    console.log(Chess.getInstance().getBoardInText());
-    console.log(pawn_promotion_position, type);
     Chess.getInstance().pawnPromotion(item, type);
-    console.log(Chess.getInstance().getBoardInText());
     props.setPawnPromotionPosition(null);
     let isInCheckMate = Chess.getInstance().isInCheckMate(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
     let isDraw = Chess.getInstance().isDraw(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
@@ -28,9 +25,11 @@ const ModalPromotePawn = (props) => {
     else props.switchPlayer();
   };
 
+  const onRequestClose = () => props.setAskForResign(true);
+
   return (
-    <MyModal visible={pawn_promotion_position !== null && status == null} onRequestClose={() => {}}>
-      <View style={{ backgroundColor: bgColor, padding: 10, borderRadius: 20, width: 100, alignItems: "center" }}>
+    <MyModal visible={pawn_promotion_position !== null && status == null} onRequestClose={onRequestClose}>
+      <View style={{ backgroundColor: bgColor, ...styles.container }}>
         {Object.keys(options).map((key, index) => {
           return (
             <FontAwesome5.Button
@@ -49,61 +48,7 @@ const ModalPromotePawn = (props) => {
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    position: "relative",
-    width: "90%",
-    maxWidth: 280,
-    borderRadius: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalTitle: {
-    paddingTop: 15,
-    fontFamily: "Ubuntu",
-    fontSize: 25,
-    width: "100%",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    textAlign: "center",
-  },
-  modalClose: {
-    position: "absolute",
-    top: 5,
-    right: 10,
-    zIndex: 50,
-  },
-  modalTimes: {
-    fontSize: 20,
-    fontFamily: "Ubuntu",
-  },
-  modalSubtitle: {
-    fontFamily: "Ubuntu",
-    textAlign: "center",
-    fontSize: 10,
-    paddingBottom: 15,
-    lineHeight: 10,
-  },
-  modalBody: {
-    paddingTop: 15,
-    width: "100%",
-    borderTopLeftRadius: 220,
-    borderTopRightRadius: 220,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
+  container: { padding: 10, borderRadius: 20, width: 100, alignItems: "center" },
 });
 
 const mapStateToProps = (state: AppState) => ({
@@ -113,6 +58,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+  setAskForResign: match.setAskForResign,
   setPawnPromotionPosition: match.setPawnPromotionPosition,
   setDataFinished: match.setDataFinished,
   switchPlayer: match.switchPlayer,
