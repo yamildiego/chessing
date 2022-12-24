@@ -2,6 +2,8 @@ import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
 import { Button } from "@react-native-material/core";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 
+import MyModal from "./MyModal";
+
 import * as match from "../Actions/match";
 import { Color } from "yd-chess-lib";
 
@@ -12,16 +14,10 @@ const ModalWins = (props) => {
 
   const backHome = () => props.navigation.navigate("HomeScreen");
   const rematch = () => props.navigation.navigate("ConfigLocalGameScreen");
+  const modalPressBack = () => {};
 
   return (
-    <Modal
-      animationType="none"
-      transparent={true}
-      visible={modal_visible}
-      onRequestClose={() => {
-        // Alert.alert("Modal has been closed.");
-      }}
-    >
+    <MyModal visible={modal_visible} onRequestClose={modalPressBack}>
       <View style={styles.centeredView}>
         <View style={{ ...styles.modalView, backgroundColor: bgColor }}>
           {(status == "Checkmate" || status == "Timeout" || status == "Resign") && (
@@ -56,7 +52,7 @@ const ModalWins = (props) => {
           </View>
         </View>
       </View>
-    </Modal>
+    </MyModal>
   );
 };
 
@@ -69,8 +65,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     position: "relative",
-    width: "90%",
-    maxWidth: 280,
+    width: 280,
     borderRadius: 20,
     alignItems: "center",
     shadowColor: "#000",
@@ -90,16 +85,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     textAlign: "center",
-  },
-  modalClose: {
-    position: "absolute",
-    top: 5,
-    right: 10,
-    zIndex: 50,
-  },
-  modalTimes: {
-    fontSize: 20,
-    fontFamily: "Ubuntu",
   },
   modalSubtitle: {
     fontFamily: "Ubuntu",

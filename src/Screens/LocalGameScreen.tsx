@@ -5,6 +5,7 @@ import { StyleSheet, ImageBackground, Alert, BackHandler } from "react-native";
 import Board from "../Components/Board";
 import PlayersInfo from "../Components/PlayersInfo";
 import ModalWins from "../Components/ModalWins";
+import ModalPromotePawn from "../Components/ModalPromotePawn";
 import Options from "../Components/Options";
 
 import * as match from "../Actions/match";
@@ -62,6 +63,7 @@ class LocalGameScreen extends React.Component {
     return (
       <ImageBackground source={background} resizeMode="cover" style={styles.backgroundImage}>
         <ModalWins navigation={this.props.navigation} />
+        <ModalPromotePawn />
         {this.props.offer_a_draw ? this.showAlert() : ""}
         <Options playerMain={false} color={Color.BLACK} />
         <PlayersInfo playerMain={false} />

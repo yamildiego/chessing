@@ -82,12 +82,15 @@ const Draggable = (props) => {
 
   const movePiece = (p_movement: string) => {
     Chess.getInstance().move(p_movement);
-    let isInCheckMate = Chess.getInstance().isInCheckMate(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
-    let isDraw = Chess.getInstance().isDraw(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
     props.setSquareSelected(null);
-    if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
-    if (isInCheckMate) props.setDataFinished({ status: "Checkmate", winner: item.color, modal_visible: true });
-    else props.switchPlayer();
+    if (Chess.getInstance().hasToPromoteAPawn()) props.setPawnPromotionPosition(p_movement);
+    else {
+      let isInCheckMate = Chess.getInstance().isInCheckMate(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
+      let isDraw = Chess.getInstance().isDraw(item.color == Color.BLACK ? Color.WHITE : Color.BLACK);
+      if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
+      if (isInCheckMate) props.setDataFinished({ status: "Checkmate", winner: item.color, modal_visible: true });
+      else props.switchPlayer();
+    }
   };
 
   useEffect(() => {
@@ -154,6 +157,7 @@ const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setSquareSelected: match.setSquareSelected,
   switchPlayer: match.switchPlayer,
   setDataFinished: match.setDataFinished,
+  setPawnPromotionPosition: match.setPawnPromotionPosition,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Draggable);
