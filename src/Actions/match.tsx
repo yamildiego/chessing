@@ -4,6 +4,8 @@ export const initializedBoard = () => ({ type: TYPES.INITIALIZE_BOARD });
 
 export const setSquareSelected = (value) => ({ type: TYPES.SET_SQUARE_SELECTED, value });
 
+export const setPieceMoved = (value) => ({ type: TYPES.SET_PIECE_MOVED, value });
+
 export const switchPlayer = () => ({ type: TYPES.SWITCH_PLAYER });
 
 export const setDataFinished = (value) => ({ type: TYPES.SET_DATA_FINISHED, value });

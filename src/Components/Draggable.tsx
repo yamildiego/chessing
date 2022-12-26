@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Animated, PanResponder, View, TouchableOpacity, Text } from "react-native";
-
+import { useState, useEffect, useRef } from "react";
+import { StyleSheet, Animated, PanResponder, TouchableOpacity, View } from "react-native";
 import { connect } from "react-redux";
-
 import * as match from "../Actions/match";
 
 import Chess, { tPosNS, tPosSN, Color } from "yd-chess-lib";
@@ -11,7 +9,7 @@ const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
-  const { item, square_selected, size, isDraggable, pieceMoved, status } = props;
+  const { item, square_selected, size, isDraggable, piece_moved, status } = props;
 
   const getOpponent = (color: Color) => (color == Color.WHITE ? Color.BLACK : Color.WHITE);
 
@@ -98,25 +96,24 @@ const Draggable = (props) => {
   useEffect(() => {
     if (item !== null) pan.setValue({ ...getPositionPixeles(item.key, size) });
 
-    if (pieceMoved !== null && item !== null && pieceMoved.from === item.key && status == null) {
+    if (piece_moved !== null && item !== null && piece_moved.from === item.key && status == null) {
       Animated.spring(pan, {
-        toValue: { ...getPositionPixeles(pieceMoved.to, size) },
+        toValue: { ...getPositionPixeles(piece_moved.to, size) },
         useNativeDriver: false,
         velocity: 150,
         restSpeedThreshold: 20,
         restDisplacementThreshold: 15,
       }).start(() => {
         setTimeout(() => {
-          movePiece(`${pieceMoved.from}x${pieceMoved.to}`, item.color, getOpponent(item.color));
+          movePiece(`${piece_moved.from}x${piece_moved.to}`, item.color, getOpponent(item.color));
         }, 150);
       });
     }
-  }, [item, pieceMoved]);
+  }, [item, piece_moved]);
 
   const tryToMove = (p_item) => {
     if (square_selected !== null && status == null) {
-      if (square_selected.movementsAllowed.includes(p_item.key))
-        movePiece(`${square_selected.key}x${p_item.key}`, square_selected.color, getOpponent(square_selected.color));
+      if (square_selected.movementsAllowed.includes(p_item.key)) props.setPieceMoved({ from: square_selected.key, to: p_item.key });
       props.setSquareSelected(null);
     }
   };
@@ -147,12 +144,11 @@ const Draggable = (props) => {
 
 const styles = StyleSheet.create({ itemDraggable: { overflow: "hidden" } });
 
-const getPositionPixeles = (key, size) => ({ x: tPosSN(key).y * size, y: 7 * size - tPosSN(key).x * size });
-
 function mapStateToProps(state, props) {
   return {
     square_selected: state.match.square_selected,
     status: state.match.status,
+    piece_moved: state.match.piece_moved,
   };
 }
 

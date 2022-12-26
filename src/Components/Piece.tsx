@@ -1,5 +1,6 @@
 import React, { Component, useRef, useEffect } from "react";
 import { View, Text, Animated } from "react-native";
+import { connect } from "react-redux";
 
 import { FontAwesome5 } from "@expo/vector-icons";
 import { TypeOfPiece, Color } from "yd-chess-lib";
@@ -21,19 +22,21 @@ const Piece = (props) => {
   };
 
   const onPress = (color) => {
-    if (color === Color.WHITE)
-      Animated.timing(scaleAnimated.current, {
-        duration: 300,
-        toValue: 1,
-        useNativeDriver: false,
-      }).start();
+    if (props.flip == "pieces") {
+      if (color === Color.WHITE)
+        Animated.timing(scaleAnimated.current, {
+          duration: 300,
+          toValue: 1,
+          useNativeDriver: false,
+        }).start();
 
-    if (color === Color.BLACK)
-      Animated.timing(scaleAnimated.current, {
-        duration: 300,
-        toValue: -1,
-        useNativeDriver: false,
-      }).start();
+      if (color === Color.BLACK)
+        Animated.timing(scaleAnimated.current, {
+          duration: 300,
+          toValue: -1,
+          useNativeDriver: false,
+        }).start();
+    }
   };
 
   useEffect(() => onPress(props.is_playing), [props.is_playing]);
@@ -66,4 +69,11 @@ const Piece = (props) => {
   );
 };
 
-export default Piece;
+function mapStateToProps(state, props) {
+  return {
+    is_playing: state.match.is_playing,
+    flip: state.config.flip,
+  };
+}
+
+export default connect(mapStateToProps)(Piece);

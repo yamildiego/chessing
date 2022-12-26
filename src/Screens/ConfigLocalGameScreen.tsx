@@ -11,13 +11,14 @@ import background from "../Assets/background.jpg";
 import white from "../Assets/white.png";
 import black from "../Assets/black.png";
 
-import Chess from "yd-chess-lib";
+import Chess, { TypeOfPiece, Color } from "yd-chess-lib";
 
 const times = { 180000: "3", 300000: "5", 600000: "10", 900000: "15" };
+const flipOptions = { board: "Board", pieces: "Pieces" };
 
 class ConfigLocalGameScreen extends Component {
   toggleShowLegalMoves = () => this.props.setShowLegalMoves(!this.props.show_legal_moves);
-  setTimePerPlayer = (time) => this.props.setTimePerPlayer(time);
+
   openGameLocal = () => {
     Chess.getInstance().reStart();
     this.props.initializedBoard();
@@ -25,7 +26,7 @@ class ConfigLocalGameScreen extends Component {
   };
 
   render() {
-    const { pieces, time_per_player, show_legal_moves } = this.props;
+    const { pieces, time_per_player, show_legal_moves, flip } = this.props;
     return (
       <View style={styles.container}>
         <View>
@@ -33,6 +34,25 @@ class ConfigLocalGameScreen extends Component {
           <View style={styles.lineSetting}>
             <Text style={styles.label}>Show legal moves</Text>
             <Switch ios_backgroundColor="white" onValueChange={this.toggleShowLegalMoves} value={show_legal_moves} />
+          </View>
+          <View style={{ ...styles.lineSetting, flexDirection: "column" }}>
+            <View>
+              <Text style={{ fontSize: 15, fontFamily: "Ubuntu", textAlign: "left", lineHeight: 20 }}>Flip</Text>
+            </View>
+            <View style={{ justifyContent: "center", alignItems: "center", marginTop: 15 }}>
+              <HStack spacing={2} divider={true}>
+                {Object.keys(flipOptions).map((key, index) => {
+                  return (
+                    <Button
+                      key={index}
+                      color={flip == key ? "secondary" : "grey"}
+                      title={() => <Text style={styles.buttonText}>{flipOptions[key]}</Text>}
+                      onPress={() => this.props.setFlip(key)}
+                    />
+                  );
+                })}
+              </HStack>
+            </View>
           </View>
           <View style={{ ...styles.lineSetting, flexDirection: "column" }}>
             <View>
@@ -46,7 +66,7 @@ class ConfigLocalGameScreen extends Component {
                       key={index}
                       color={time_per_player == key ? "secondary" : "grey"}
                       title={() => <Text style={styles.buttonText}>{times[key]}</Text>}
-                      onPress={() => this.setTimePerPlayer(key)}
+                      onPress={() => this.props.setTimePerPlayer(key)}
                     />
                   );
                 })}
@@ -104,10 +124,12 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state: AppState) => ({
   show_legal_moves: state.config.show_legal_moves,
   time_per_player: state.config.time_per_player,
+  flip: state.config.flip,
 });
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setShowLegalMoves: config.setShowLegalMoves,
+  setFlip: config.setFlip,
   setTimePerPlayer: config.setTimePerPlayer,
   initializedBoard: match.initializedBoard,
 };

@@ -6,6 +6,7 @@ import * as TYPES from "./types";
 const initialState = {
   square_selected: null,
   is_playing: Color.WHITE,
+  piece_moved: null,
   data_finished: { status: null, winner: null, modal_visible: false },
   offer_a_draw: false,
   ask_for_resign: false,
@@ -21,6 +22,8 @@ export default function game(state = initialState, action = {}) {
       return { ...newState, square_selected: action.value };
     case TYPES.SWITCH_PLAYER:
       return { ...newState, is_playing: state.is_playing === Color.WHITE ? Color.BLACK : Color.WHITE };
+    case TYPES.SET_PIECE_MOVED:
+      return { ...newState, piece_moved: action.value };
     case TYPES.SET_DATA_FINISHED:
       return { ...newState, data_finished: { ...state.data_finished, ...action.value } };
     case TYPES.SET_OFFER_A_DRAW:

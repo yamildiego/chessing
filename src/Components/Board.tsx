@@ -11,7 +11,7 @@ import * as config from "../Actions/config";
 import white from "../Assets/white.png";
 import black from "../Assets/black.png";
 
-import Chess, { tPosSN, tPosNS } from "yd-chess-lib";
+import Chess, { tPosSN, tPosNS, Color } from "yd-chess-lib";
 
 const Board = (props) => {
   const { board, pieces, is_playing, square_selected, show_legal_moves, status, sizeSquare } = props;
@@ -35,7 +35,7 @@ const Board = (props) => {
     let posNumber = tPosSN(posString);
     let square = Chess.getInstance().getSquare(posString);
     if (square_selected !== null && square == null) {
-      if (square_selected.movementsAllowed.includes(posString)) setPieceMoved({ from: square_selected.key, to: posString });
+      if (square_selected.movementsAllowed.includes(posString)) props.setPieceMoved({ from: square_selected.key, to: posString });
       props.setSquareSelected(null);
     }
   };
@@ -84,7 +84,6 @@ const Board = (props) => {
                     size={sizeSquare}
                     index={1}
                     item={item}
-                    pieceMoved={pieceMoved}
                     key={`item_${indexX}_${indexY}`}
                   >
                     <Piece size={sizeSquare} piece={item} is_playing={is_playing} />
@@ -119,11 +118,13 @@ const mapStateToProps = (state: AppState) => ({
   status: state.match.status,
   show_legal_moves: state.config.show_legal_moves,
   sizeSquare: state.visual.sizeSquare,
+  flip: state.config.flip,
 });
 
 const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setSquareSelected: match.setSquareSelected,
   switchPlayer: match.switchPlayer,
+  setPieceMoved: match.setPieceMoved,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Board);

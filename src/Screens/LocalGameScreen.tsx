@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { StyleSheet, ImageBackground, Alert, BackHandler } from "react-native";
+import { StyleSheet, View, ImageBackground, Alert, BackHandler } from "react-native";
 
 import Board from "../Components/Board";
 import PlayersInfo from "../Components/PlayersInfo";
@@ -81,14 +81,21 @@ class LocalGameScreen extends React.Component {
   };
 
   render() {
+    const { flip } = this.props;
+
     return (
       <ImageBackground source={background} resizeMode="cover" style={styles.backgroundImage}>
         <ModalWins navigation={this.props.navigation} />
         <ModalPromotePawn />
         {this.props.offer_a_draw ? this.showAlertOfferADraw() : ""}
         {this.props.ask_for_resign ? this.showAlertAskForResign() : ""}
-        <Options playerMain={false} color={Color.BLACK} />
-        <PlayersInfo playerMain={false} />
+        {flip == "pieces" && (
+          <>
+            <Options playerMain={false} color={Color.BLACK} />
+            <PlayersInfo playerMain={false} />
+          </>
+        )}
+        {flip !== "pieces" && <View style={{ flex: 2 }}></View>}
         <Board />
         <PlayersInfo playerMain={true} />
         <Options playerMain={true} color={Color.WHITE} />
@@ -108,6 +115,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state, props) {
   return {
+    flip: state.config.flip,
     offer_a_draw: state.match.offer_a_draw,
     ask_for_resign: state.match.ask_for_resign,
     is_playing: state.match.is_playing,
