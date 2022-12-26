@@ -104,9 +104,7 @@ const Draggable = (props) => {
         restSpeedThreshold: 20,
         restDisplacementThreshold: 15,
       }).start(() => {
-        setTimeout(() => {
-          movePiece(`${piece_moved.from}x${piece_moved.to}`, item.color, getOpponent(item.color));
-        }, 150);
+        setTimeout(() => movePiece(`${piece_moved.from}x${piece_moved.to}`, item.color, getOpponent(item.color)), 150);
       });
     }
   }, [item, piece_moved]);
@@ -144,6 +142,8 @@ const Draggable = (props) => {
 
 const styles = StyleSheet.create({ itemDraggable: { overflow: "hidden" } });
 
+const getPositionPixeles = (key, size) => ({ x: tPosSN(key).y * size, y: 7 * size - tPosSN(key).x * size });
+
 function mapStateToProps(state, props) {
   return {
     square_selected: state.match.square_selected,
@@ -157,6 +157,7 @@ const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   switchPlayer: match.switchPlayer,
   setDataFinished: match.setDataFinished,
   setPawnPromotionPosition: match.setPawnPromotionPosition,
+  setPieceMoved: match.setPieceMoved,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Draggable);
