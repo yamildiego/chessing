@@ -27,12 +27,10 @@ const Draggable = (props) => {
       )
         props.setSquareSelected(item);
     },
-    onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
-      useNativeDriver: false,
-      listener: (evt) => {
-        const { pageX, pageY } = evt.nativeEvent;
-      },
-    }),
+    onPanResponderMove: (evt, gesture) => {
+      let order = item.color == Color.BLACK ? -1 : 1;
+      pan.setValue({ x: gesture.dx * order, y: gesture.dy * order });
+    },
     onPanResponderRelease: (evt, gestureState) => {
       setZIndex(1);
       if (square_selected !== null && square_selected.key == item.key) {

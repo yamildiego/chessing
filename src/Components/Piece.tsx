@@ -17,26 +17,29 @@ const pieces = {
 const Piece = (props) => {
   const scaleAnimated = useRef(new Animated.Value(1));
 
-  const animatedStyle = {
-    transform: [{ scaleY: scaleAnimated.current }, { scaleX: scaleAnimated.current }],
-  };
+  const animatedStyle =
+    props.flip == "pieces"
+      ? {
+          transform: [{ scaleY: scaleAnimated.current }, { scaleX: scaleAnimated.current }],
+        }
+      : props.is_playing == Color.BLACK
+      ? { transform: [{ scaleY: -1 }, { scaleX: -1 }] }
+      : {};
 
   const onPress = (color) => {
-    if (props.flip == "pieces") {
-      if (color === Color.WHITE)
-        Animated.timing(scaleAnimated.current, {
-          duration: 300,
-          toValue: 1,
-          useNativeDriver: false,
-        }).start();
+    if (color === Color.WHITE)
+      Animated.timing(scaleAnimated.current, {
+        duration: 300,
+        toValue: 1,
+        useNativeDriver: false,
+      }).start();
 
-      if (color === Color.BLACK)
-        Animated.timing(scaleAnimated.current, {
-          duration: 300,
-          toValue: -1,
-          useNativeDriver: false,
-        }).start();
-    }
+    if (color === Color.BLACK)
+      Animated.timing(scaleAnimated.current, {
+        duration: 300,
+        toValue: -1,
+        useNativeDriver: false,
+      }).start();
   };
 
   useEffect(() => onPress(props.is_playing), [props.is_playing]);

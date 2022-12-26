@@ -40,8 +40,10 @@ const Board = (props) => {
     }
   };
 
+  const animatedStyle = is_playing == Color.BLACK ? { transform: [{ scaleY: -1 }, { scaleX: -1 }] } : {};
+
   return (
-    <View style={styles.board}>
+    <View style={{ ...styles.board, ...animatedStyle }}>
       <View style={{ position: "relative" }}>
         {Object.keys(board)
           .reverse()
