@@ -81,7 +81,7 @@ class LocalGameScreen extends React.Component {
   };
 
   render() {
-    const { flip } = this.props;
+    const { flip, is_playing } = this.props;
 
     return (
       <ImageBackground source={background} resizeMode="cover" style={styles.backgroundImage}>
@@ -98,7 +98,7 @@ class LocalGameScreen extends React.Component {
         {flip !== "pieces" && <View style={{ flex: 2 }}></View>}
         <Board />
         <PlayersInfo playerMain={true} />
-        <Options playerMain={true} color={Color.WHITE} />
+        <Options playerMain={true} color={flip == "pieces" ? Color.WHITE : is_playing} />
       </ImageBackground>
     );
   }

@@ -19,9 +19,7 @@ const Piece = (props) => {
 
   const animatedStyle =
     props.flip == "pieces"
-      ? {
-          transform: [{ scaleY: scaleAnimated.current }, { scaleX: scaleAnimated.current }],
-        }
+      ? { transform: [{ scaleY: scaleAnimated.current }, { scaleX: scaleAnimated.current }] }
       : props.is_playing == Color.BLACK
       ? { transform: [{ scaleY: -1 }, { scaleX: -1 }] }
       : {};

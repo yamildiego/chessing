@@ -5,11 +5,9 @@ import * as match from "../Actions/match";
 
 import Chess, { tPosNS, tPosSN, Color } from "yd-chess-lib";
 
-const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
-
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
-  const { item, square_selected, size, isDraggable, piece_moved, status } = props;
+  const { item, square_selected, size, isDraggable, piece_moved, status, sizeSquare } = props;
 
   const getOpponent = (color: Color) => (color == Color.WHITE ? Color.BLACK : Color.WHITE);
 
@@ -20,8 +18,14 @@ const Draggable = (props) => {
     onPanResponderGrant: (evt, gestureState) => {
       setZIndex(1);
       pan.setOffset({ ...getPositionPixeles(item.key, size) });
-      if (square_selected !== null && item !== null && Chess.getInstance().isCasteling(square_selected.key, item.key)) tryToMove(item);
-      else if (
+      if (
+        square_selected !== null &&
+        item !== null &&
+        Chess.getInstance().isCasteling(square_selected.key, item.key) &&
+        piece_moved == null
+      ) {
+        tryToMove(item);
+      } else if (
         square_selected == null ||
         (square_selected !== null && square_selected.color === item.color && square_selected.key !== item.key)
       )
@@ -79,15 +83,20 @@ const Draggable = (props) => {
   });
 
   const movePiece = (p_movement: string, colorCurrentPlayer: Color, colorOpponent: Color) => {
-    Chess.getInstance().move(p_movement);
-    props.setSquareSelected(null);
-    if (Chess.getInstance().hasToPromoteAPawn()) props.setPawnPromotionPosition(p_movement);
-    else {
-      let isInCheckMate = Chess.getInstance().isInCheckMate(colorOpponent);
-      let isDraw = Chess.getInstance().isDraw(colorOpponent);
-      if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
-      if (isInCheckMate) props.setDataFinished({ status: "Checkmate", winner: colorCurrentPlayer, modal_visible: true });
-      else props.switchPlayer();
+    let moved = Chess.getInstance().move(p_movement);
+    if (moved) {
+      props.setSquareSelected(null);
+      if (Chess.getInstance().hasToPromoteAPawn()) props.setPawnPromotionPosition(p_movement);
+      else {
+        let isInCheckMate = Chess.getInstance().isInCheckMate(colorOpponent);
+        let isDraw = Chess.getInstance().isDraw(colorOpponent);
+        if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
+        if (isInCheckMate) props.setDataFinished({ status: "Checkmate", winner: colorCurrentPlayer, modal_visible: true });
+        else {
+          props.setPieceMoved(null);
+          props.switchPlayer();
+        }
+      }
     }
   };
 
@@ -108,7 +117,7 @@ const Draggable = (props) => {
   }, [item, piece_moved]);
 
   const tryToMove = (p_item) => {
-    if (square_selected !== null && status == null) {
+    if (square_selected !== null && status == null && piece_moved == null) {
       if (square_selected.movementsAllowed.includes(p_item.key)) props.setPieceMoved({ from: square_selected.key, to: p_item.key });
       props.setSquareSelected(null);
     }
@@ -116,13 +125,18 @@ const Draggable = (props) => {
 
   const propsAnimated = item != null && isDraggable ? { ...panResponder.panHandlers } : {};
 
+  let transform = pan.getTranslateTransform();
+
+  if (item !== null && item.key == "1h") transform = [{ translateX: sizeSquare * 7 }, { translateY: sizeSquare * 7 }];
+  if (item !== null && item.key == "8h") transform = [{ translateX: sizeSquare * 7 }, { translateY: 0 }];
+
   return (
     <>
       <Animated.View
         {...propsAnimated}
         style={
           item !== null && isDraggable
-            ? [{ transform: pan.getTranslateTransform() }, { position: "absolute" }, { zIndex: zIndex }]
+            ? [{ transform: transform }, { position: "absolute" }, { zIndex: zIndex }]
             : item !== null
             ? [{ left: getPositionPixeles(item.key, size).x, top: getPositionPixeles(item.key, size).y }, { position: "absolute" }]
             : {}
@@ -147,6 +161,7 @@ function mapStateToProps(state, props) {
     square_selected: state.match.square_selected,
     status: state.match.status,
     piece_moved: state.match.piece_moved,
+    sizeSquare: state.visual.sizeSquare,
   };
 }
 

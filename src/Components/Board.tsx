@@ -14,7 +14,7 @@ import black from "../Assets/black.png";
 import Chess, { tPosSN, tPosNS, Color } from "yd-chess-lib";
 
 const Board = (props) => {
-  const { board, pieces, is_playing, square_selected, show_legal_moves, status, sizeSquare } = props;
+  const { board, pieces, is_playing, square_selected, show_legal_moves, status, sizeSquare, flip } = props;
   const [pieceMoved, setPieceMoved] = useState(null);
 
   const highlight = (number, letter) => {
@@ -40,7 +40,7 @@ const Board = (props) => {
     }
   };
 
-  const animatedStyle = is_playing == Color.BLACK ? { transform: [{ scaleY: -1 }, { scaleX: -1 }] } : {};
+  const animatedStyle = flip == "board" && is_playing == Color.BLACK ? { transform: [{ scaleY: -1 }, { scaleX: -1 }] } : {};
 
   return (
     <View style={{ ...styles.board, ...animatedStyle }}>
