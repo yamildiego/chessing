@@ -11,7 +11,7 @@ import * as config from "../Actions/config";
 import white from "../Assets/white.png";
 import black from "../Assets/black.png";
 
-import Chess, { tPosSN, tPosNS, Color } from "yd-chess-lib";
+import { Chess, tPosSN, tPosNS, Color } from "yd-chess-lib";
 
 const Board = (props) => {
   const { board, pieces, is_playing, square_selected, show_legal_moves, status, sizeSquare, flip } = props;

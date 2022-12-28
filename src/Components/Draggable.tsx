@@ -3,7 +3,7 @@ import { StyleSheet, Animated, PanResponder, TouchableOpacity, View } from "reac
 import { connect } from "react-redux";
 import * as match from "../Actions/match";
 
-import Chess, { tPosNS, tPosSN, Color } from "yd-chess-lib";
+import { Chess, tPosNS, tPosSN, Color } from "yd-chess-lib";
 
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);

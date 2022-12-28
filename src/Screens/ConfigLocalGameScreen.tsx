@@ -11,7 +11,7 @@ import background from "../Assets/background.jpg";
 import white from "../Assets/white.png";
 import black from "../Assets/black.png";
 
-import Chess, { TypeOfPiece, Color } from "yd-chess-lib";
+import { Chess, TypeOfPiece, Color } from "yd-chess-lib";
 
 const times = { 180000: "3", 300000: "5", 600000: "10", 900000: "15" };
 const flipOptions = { board: "Board", pieces: "Pieces" };

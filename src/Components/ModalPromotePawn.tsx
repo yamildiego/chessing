@@ -3,7 +3,7 @@ import { Button } from "@react-native-material/core";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 import { FontAwesome5 } from "@expo/vector-icons";
 
-import Chess, { Color, TypeOfPiece } from "yd-chess-lib";
+import { Chess, Color, TypeOfPiece } from "yd-chess-lib";
 import * as match from "../Actions/match";
 
 import MyModal from "./MyModal";
