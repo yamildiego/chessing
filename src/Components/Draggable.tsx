@@ -7,7 +7,7 @@ import { Chess, tPosNS, tPosSN, Color } from "yd-chess-lib";
 
 const Draggable = (props) => {
   const [zIndex, setZIndex] = useState(0);
-  const { item, square_selected, size, isDraggable, piece_moved, status, sizeSquare } = props;
+  const { item, square_selected, size, isDraggable, piece_moved, status, sizeSquare, flip } = props;
 
   const getOpponent = (color: Color) => (color == Color.WHITE ? Color.BLACK : Color.WHITE);
 
@@ -32,7 +32,7 @@ const Draggable = (props) => {
         props.setSquareSelected(item);
     },
     onPanResponderMove: (evt, gesture) => {
-      let order = item.color == Color.BLACK ? -1 : 1;
+      let order = flip == "board" && item.color == Color.BLACK ? -1 : 1;
       pan.setValue({ x: gesture.dx * order, y: gesture.dy * order });
     },
     onPanResponderRelease: (evt, gestureState) => {
@@ -162,6 +162,7 @@ function mapStateToProps(state, props) {
     status: state.match.status,
     piece_moved: state.match.piece_moved,
     sizeSquare: state.visual.sizeSquare,
+    flip: state.config.flip,
   };
 }
 

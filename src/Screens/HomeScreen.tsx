@@ -29,14 +29,8 @@ class HomeScreen extends Component {
             <Button
               color="secondary"
               style={styles.button}
-              title={() => <Text style={styles.buttonText}>PLAY LOCAL</Text>}
+              title={() => <Text style={styles.buttonText}>New Game</Text>}
               onPress={this.openGameLocal}
-            />
-            <Button
-              style={styles.button}
-              color="secondary"
-              title={() => <Text style={styles.buttonText}>PLAY ONLINE</Text>}
-              onPress={() => alert("🎉🎉🎉")}
             />
           </View>
         </View>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, StyleSheet, Text, View, ImageBackground } from "react-native";
+import { Switch, StyleSheet, Text, View } from "react-native";
 import { HStack, Box, Divider, Button } from "@react-native-material/core";
 
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
@@ -13,7 +13,7 @@ import black from "../Assets/black.png";
 
 import { Chess, TypeOfPiece, Color } from "yd-chess-lib";
 
-const times = { 180000: "3", 300000: "5", 600000: "10", 900000: "15" };
+const times = { 300000: "5", 600000: "10", 900000: "15", 1800000: "30" };
 const flipOptions = { board: "Board", pieces: "Pieces" };
 
 class ConfigLocalGameScreen extends Component {
@@ -77,7 +77,7 @@ class ConfigLocalGameScreen extends Component {
         <Button
           style={{ padding: 10 }}
           color="secondary"
-          title={() => <Text style={styles.buttonText}>PLAY</Text>}
+          title={() => <Text style={styles.buttonText}>Play</Text>}
           onPress={() => this.openGameLocal()}
         />
       </View>
