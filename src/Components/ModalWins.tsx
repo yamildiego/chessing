@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
-import { Button } from "@react-native-material/core";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 
+import { primaryColor } from "../Constants/MyColors";
 import MyModal from "./MyModal";
-
+import Button from "./Button";
 import * as match from "../Actions/match";
 import { Color } from "yd-chess-lib";
 
@@ -36,18 +36,12 @@ const ModalWins = (props) => {
           )}
           <View style={{ ...styles.modalBody, backgroundColor: Tcolor }}>
             <View style={styles.buttons}>
-              <Button
-                color="secondary"
-                style={styles.button}
-                title={() => <Text style={styles.buttonText}>BACK HOME</Text>}
-                onPress={backHome}
-              />
-              <Button
-                style={styles.button}
-                color="secondary"
-                title={() => <Text style={styles.buttonText}>REMATCH</Text>}
-                onPress={rematch}
-              />
+              <Button onPress={backHome} width={150}>
+                BACK HOME
+              </Button>
+              <Button onPress={rematch} width={150}>
+                REMATCH
+              </Button>
             </View>
           </View>
         </View>
@@ -106,17 +100,6 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  button: {
-    padding: 10,
-    marginBottom: 10,
-    width: 150,
-  },
-  buttonText: {
-    fontSize: 16,
-    lineHeight: 30,
-    color: "white",
-    fontFamily: "Ubuntu",
   },
 });
 

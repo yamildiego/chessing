@@ -1,6 +1,7 @@
-const primaryColor = "white";
+const primaryColor = "#0b8439";
 const secondaryColor = "#586B7C";
-const textColor = "#444";
+const logoColor = "#444";
+const textColor = "#594959";
 const backgroundDefault = "white";
 
-export { primaryColor, secondaryColor, textColor, backgroundDefault };
+export { primaryColor, secondaryColor, textColor, logoColor, backgroundDefault };

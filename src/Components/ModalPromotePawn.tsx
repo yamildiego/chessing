@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
-import { Button } from "@react-native-material/core";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 import { FontAwesome5 } from "@expo/vector-icons";
 

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { connect, MapStateToProps } from "react-redux";
 import { View, Text, StyleSheet, StatusBar, Dimensions } from "react-native";
 import { Avatar } from "react-native-paper";
-import { Button } from "@react-native-material/core";
-import { secondaryColor, textColor } from "../Constants/MyColors";
+import Button from "../Components/Button";
+import { primaryColor, secondaryColor, logoColor, textColor } from "../Constants/MyColors";
 import logo from "../../assets/icon.png";
 
 import * as config from "../Actions/config";
@@ -22,16 +22,11 @@ class HomeScreen extends Component {
         <StatusBar barStyle={"dark-content"} style="auto" />
         <View style={styles.logo}>
           <Avatar.Image style={{ backgroundColor: "transparent" }} size={size * 5} source={logo} />
-          <Text style={{ ...styles.title, color: textColor, fontSize: size, lineHeight: size * 2 }}>Chessing</Text>
+          <Text style={{ ...styles.title, color: logoColor, fontSize: size, lineHeight: size * 2 }}>Chessing</Text>
         </View>
         <View style={styles.subContainer}>
           <View style={styles.buttons}>
-            <Button
-              color="secondary"
-              style={styles.button}
-              title={() => <Text style={styles.buttonText}>New Game</Text>}
-              onPress={this.openGameLocal}
-            />
+            <Button onPress={this.openGameLocal}>New Game</Button>
           </View>
         </View>
       </View>
