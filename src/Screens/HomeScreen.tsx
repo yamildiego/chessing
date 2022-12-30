@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { connect, MapStateToProps } from "react-redux";
 import { View, Text, StyleSheet, StatusBar, Dimensions } from "react-native";
 import { Avatar } from "react-native-paper";
+
 import Button from "../Components/Button";
+import Logo from "../Components/Logo";
+
 import { primaryColor, secondaryColor, logoColor, textColor } from "../Constants/MyColors";
 import logo from "../../assets/icon.png";
 
@@ -11,22 +14,25 @@ import * as config from "../Actions/config";
 const size = Math.round(Dimensions.get("window").width * 0.06);
 
 class HomeScreen extends Component {
-  openGameLocal = () => {
+  playOffline = () => {
     this.props.inizialize();
-    this.props.navigation.navigate("ConfigLocalGameScreen");
+    this.props.navigation.navigate("ConfigOfflineScreen");
+  };
+
+  playOnline = () => {
+    this.props.inizialize();
+    this.props.navigation.navigate("PlayOnlineScreen");
   };
 
   render() {
     return (
       <View style={styles.container}>
         <StatusBar barStyle={"dark-content"} style="auto" />
-        <View style={styles.logo}>
-          <Avatar.Image style={{ backgroundColor: "transparent" }} size={size * 5} source={logo} />
-          <Text style={{ ...styles.title, color: logoColor, fontSize: size, lineHeight: size * 2 }}>Chessing</Text>
-        </View>
+        <Logo />
         <View style={styles.subContainer}>
           <View style={styles.buttons}>
-            <Button onPress={this.openGameLocal}>New Game</Button>
+            <Button onPress={this.playOffline}>Play offline</Button>
+            <Button onPress={this.playOnline}>Play online</Button>
           </View>
         </View>
       </View>
@@ -58,16 +64,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     padding: 10,
     justifyContent: "space-between",
-  },
-  button: {
-    padding: 10,
-    marginBottom: 10,
-  },
-  buttonText: {
-    fontSize: 16,
-    lineHeight: 30,
-    color: "white",
-    fontFamily: "Ubuntu",
   },
 });
 

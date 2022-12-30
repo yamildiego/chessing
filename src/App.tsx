@@ -13,7 +13,9 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducers from "./Reducers";
 
 import HomeScreen from "./Screens/HomeScreen";
-import ConfigLocalGameScreen from "./Screens/ConfigLocalGameScreen";
+import ConfigOfflineScreen from "./Screens/ConfigOfflineScreen";
+import ConfigOnlineScreen from "./Screens/ConfigOnlineScreen";
+import PlayOnlineScreen from "./Screens/PlayOnlineScreen";
 import LocalGameScreen from "./Screens/LocalGameScreen";
 
 import { secondaryColor } from "./Constants/MyColors";
@@ -50,11 +52,31 @@ export default function App() {
               options={{
                 headerStyle: { backgroundColor: "#fff" },
                 headerTintColor: secondaryColor,
-                title: "Play local",
+                title: "Play offline",
                 headerTitleStyle: { fontFamily: "Ubuntu" },
               }}
-              name="ConfigLocalGameScreen"
-              component={ConfigLocalGameScreen}
+              name="ConfigOfflineScreen"
+              component={ConfigOfflineScreen}
+            />
+            <Stack.Screen
+              options={{
+                headerStyle: { backgroundColor: "#fff" },
+                headerTintColor: secondaryColor,
+                title: "Play online",
+                headerTitleStyle: { fontFamily: "Ubuntu" },
+              }}
+              name="PlayOnlineScreen"
+              component={PlayOnlineScreen}
+            />
+            <Stack.Screen
+              options={{
+                headerStyle: { backgroundColor: "#fff" },
+                headerTintColor: secondaryColor,
+                title: "Create game",
+                headerTitleStyle: { fontFamily: "Ubuntu" },
+              }}
+              name="ConfigOnlineScreen"
+              component={ConfigOnlineScreen}
             />
             <Stack.Screen options={{ headerShown: false }} name="LocalGameScreen" component={LocalGameScreen} />
           </Stack.Navigator>

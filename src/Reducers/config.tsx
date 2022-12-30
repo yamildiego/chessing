@@ -5,6 +5,8 @@ const initialState = {
   show_legal_moves: true,
   time_per_player: 600000,
   flip: "board",
+  is_loading: false,
+  code: null,
 };
 
 export default function config(state = initialState, action = {}) {
@@ -18,6 +20,8 @@ export default function config(state = initialState, action = {}) {
       return { ...newState, flip: action.value };
     case TYPES.SET_TIME_PER_PLAY:
       return { ...newState, time_per_player: action.value };
+    case TYPES.SET_IS_LOADING:
+      return { ...newState, is_loading: action.value };
     default:
       return state;
   }

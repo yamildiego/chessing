@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, StyleSheet, Text, View } from "react-native";
+import { Switch, StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 
 import * as config from "../Actions/config";
@@ -17,17 +17,11 @@ import { Chess, TypeOfPiece, Color } from "yd-chess-lib";
 const times = { 300000: "5", 600000: "10", 900000: "15", 1800000: "30" };
 const flipOptions = { board: "Board", pieces: "Pieces" };
 
-class ConfigLocalGameScreen extends Component {
-  toggleShowLegalMoves = () => this.props.setShowLegalMoves(!this.props.show_legal_moves);
-
-  openGameLocal = () => {
-    Chess.getInstance().reStart();
-    this.props.initializedBoard();
-    this.props.navigation.navigate("LocalGameScreen");
-  };
+class ConfigOnlineScreen extends Component {
+  createGame = () => this.props.createGame();
 
   render() {
-    const { pieces, time_per_player, show_legal_moves, flip } = this.props;
+    const { pieces, time_per_player, show_legal_moves, flip, is_loading } = this.props;
     return (
       <View style={styles.container}>
         <View>
@@ -36,29 +30,14 @@ class ConfigLocalGameScreen extends Component {
             <Text style={styles.label}>Show legal moves</Text>
             <Switch
               ios_backgroundColor="white"
+              disabled={is_loading}
               style={{ color: "red" }}
               trackColor={{ false: "#767577", true: "#0b843936" }}
               thumbColor={show_legal_moves ? primaryColor : "#f4f3f4"}
               color={primaryColor}
-              onValueChange={this.toggleShowLegalMoves}
+              onValueChange={() => this.props.setShowLegalMoves(!this.props.show_legal_moves)}
               value={show_legal_moves}
             />
-          </View>
-          <View style={{ ...styles.lineSetting, flexDirection: "column" }}>
-            <View>
-              <Text style={{ fontSize: 15, fontFamily: "Ubuntu", textAlign: "left", lineHeight: 20 }}>Flip</Text>
-            </View>
-            <View style={{ alignItems: "center", marginTop: 15 }}>
-              <View style={{ width: 170, flexDirection: "row", justifyContent: "space-between" }}>
-                {Object.keys(flipOptions).map((key, index) => {
-                  return (
-                    <Button width={80} key={index} bgColor={flip == key ? primaryColor : "grey"} onPress={() => this.props.setFlip(key)}>
-                      {flipOptions[key]}
-                    </Button>
-                  );
-                })}
-              </View>
-            </View>
           </View>
           <View style={{ ...styles.lineSetting, flexDirection: "column" }}>
             <View>
@@ -69,6 +48,7 @@ class ConfigLocalGameScreen extends Component {
                 {Object.keys(times).map((key, index) => {
                   return (
                     <Button
+                      disabled={is_loading}
                       width={80}
                       key={index}
                       bgColor={time_per_player == key ? primaryColor : "grey"}
@@ -82,7 +62,7 @@ class ConfigLocalGameScreen extends Component {
             </View>
           </View>
         </View>
-        <Button onPress={() => this.openGameLocal()}>Play</Button>
+        <Button onPress={() => this.createGame()}>{is_loading ? <ActivityIndicator color={"#fff"} /> : "Create game"}</Button>
       </View>
     );
   }
@@ -121,6 +101,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state: AppState) => ({
   show_legal_moves: state.config.show_legal_moves,
   time_per_player: state.config.time_per_player,
+  is_loading: state.config.is_loading,
   flip: state.config.flip,
 });
 
@@ -128,7 +109,8 @@ const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
   setShowLegalMoves: config.setShowLegalMoves,
   setFlip: config.setFlip,
   setTimePerPlayer: config.setTimePerPlayer,
+  createGame: config.createGame,
   initializedBoard: match.initializedBoard,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfigLocalGameScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigOnlineScreen);

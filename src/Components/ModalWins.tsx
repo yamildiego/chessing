@@ -13,7 +13,7 @@ const ModalWins = (props) => {
   const bgColor = winner === Color.BLACK ? "#343434" : "#fff";
 
   const backHome = () => props.navigation.navigate("HomeScreen");
-  const rematch = () => props.navigation.navigate("ConfigLocalGameScreen");
+  const rematch = () => props.navigation.navigate("ConfigOfflineScreen");
   const onRequestClose = () => props.navigation.navigate("HomeScreen");
 
   return (

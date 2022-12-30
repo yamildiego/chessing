@@ -4,6 +4,7 @@ import { primaryColor } from "../../Constants/MyColors";
 const Button = (props) => {
   return (
     <TouchableOpacity
+      disabled={props.disabled !== undefined ? props.disabled : false}
       onPress={props.onPress}
       style={{
         ...styles.button,
@@ -20,6 +21,8 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 10,
     borderRadius: 4,
+    textAlign: "center",
+    alignItems: "center",
   },
   buttonText: {
     fontSize: 16,
