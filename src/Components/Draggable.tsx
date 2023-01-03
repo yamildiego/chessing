@@ -1,11 +1,28 @@
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, Animated, PanResponder, TouchableOpacity, View } from "react-native";
-import { connect } from "react-redux";
+import { connect, MapDispatchToProps } from "react-redux";
 import * as match from "../Actions/match";
 
 import { Chess, tPosNS, tPosSN, Color } from "yd-chess-lib";
 
-const Draggable = (props) => {
+interface DraggableProps {
+  item: PieceType;
+  square_selected: PieceType | null;
+  size: number;
+  isDraggable: boolean;
+  piece_moved: { from: string; to: string };
+  status: string | null;
+  sizeSquare: number;
+  flip: string;
+  children: React.ReactNode;
+  switchPlayer: () => void;
+  setPieceMoved: (value: { from: string; to: string } | null) => void;
+  setSquareSelected: (value: PieceType | null) => void;
+  setPawnPromotionPosition: (value: string | null) => void;
+  setDataFinished: (value: { status: string | null; winner: string | null; modal_visible: boolean }) => void;
+}
+
+const Draggable = (props: DraggableProps) => {
   const [zIndex, setZIndex] = useState(0);
   const { item, square_selected, size, isDraggable, piece_moved, status, sizeSquare, flip } = props;
 
@@ -18,12 +35,7 @@ const Draggable = (props) => {
     onPanResponderGrant: (evt, gestureState) => {
       setZIndex(1);
       pan.setOffset({ ...getPositionPixeles(item.key, size) });
-      if (
-        square_selected !== null &&
-        item !== null &&
-        Chess.getInstance().isCasteling(square_selected.key, item.key) &&
-        piece_moved == null
-      ) {
+      if (square_selected !== null && Chess.getInstance().isCasteling(square_selected.key, item.key) && piece_moved == null) {
         tryToMove(item);
       } else if (
         square_selected == null ||
@@ -55,7 +67,7 @@ const Draggable = (props) => {
         pan.flattenOffset();
 
         //evaluate if its allow to move at the new squeare
-        if (item !== null && item.movementsAllowed.includes(newPositionText) && status == null) {
+        if (item.movementsAllowed.includes(newPositionText) && status == null) {
           Animated.spring(pan, {
             toValue: { ...getPositionPixeles(newPositionText, size) },
             useNativeDriver: false,
@@ -101,9 +113,9 @@ const Draggable = (props) => {
   };
 
   useEffect(() => {
-    if (item !== null) pan.setValue({ ...getPositionPixeles(item.key, size) });
+    pan.setValue({ ...getPositionPixeles(item.key, size) });
 
-    if (piece_moved !== null && item !== null && piece_moved.from === item.key && status == null) {
+    if (piece_moved !== null && piece_moved.from === item.key && status == null) {
       Animated.spring(pan, {
         toValue: { ...getPositionPixeles(piece_moved.to, size) },
         useNativeDriver: false,
@@ -116,37 +128,33 @@ const Draggable = (props) => {
     }
   }, [item, piece_moved]);
 
-  const tryToMove = (p_item) => {
+  const tryToMove = (p_item: PieceType) => {
     if (square_selected !== null && status == null && piece_moved == null) {
       if (square_selected.movementsAllowed.includes(p_item.key)) props.setPieceMoved({ from: square_selected.key, to: p_item.key });
       props.setSquareSelected(null);
     }
   };
 
-  const propsAnimated = item != null && isDraggable ? { ...panResponder.panHandlers } : {};
+  const propsAnimated = isDraggable ? { ...panResponder.panHandlers } : {};
 
   let transform = pan.getTranslateTransform();
 
-  if (item !== null && item.key == "1h") transform = [{ translateX: sizeSquare * 7 }, { translateY: sizeSquare * 7 }];
-  if (item !== null && item.key == "8h") transform = [{ translateX: sizeSquare * 7 }, { translateY: 0 }];
+  if (item.key == "1h") transform = [{ translateX: sizeSquare * 7 }, { translateY: sizeSquare * 7 }];
+  if (item.key == "8h") transform = [{ translateX: sizeSquare * 7 }, { translateY: 0 }];
 
   return (
     <>
       <Animated.View
         {...propsAnimated}
         style={
-          item !== null && isDraggable
+          isDraggable
             ? [{ transform: transform }, { position: "absolute" }, { zIndex: zIndex }]
-            : item !== null
-            ? [{ left: getPositionPixeles(item.key, size).x, top: getPositionPixeles(item.key, size).y }, { position: "absolute" }]
-            : {}
+            : [{ left: getPositionPixeles(item.key, size).x, top: getPositionPixeles(item.key, size).y }, { position: "absolute" }]
         }
       >
-        {item !== null && (
-          <TouchableOpacity activeOpacity={1} onPress={() => (!isDraggable ? tryToMove(item) : null)}>
-            <View style={{ ...styles.itemDraggable, width: size, height: size }}>{props.children}</View>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity activeOpacity={1} onPress={() => (!isDraggable ? tryToMove(item) : null)}>
+          <View style={{ ...styles.itemDraggable, width: size, height: size }}>{props.children}</View>
+        </TouchableOpacity>
       </Animated.View>
     </>
   );
@@ -154,9 +162,9 @@ const Draggable = (props) => {
 
 const styles = StyleSheet.create({ itemDraggable: { overflow: "hidden" } });
 
-const getPositionPixeles = (key, size) => ({ x: tPosSN(key).y * size, y: 7 * size - tPosSN(key).x * size });
+const getPositionPixeles = (key: string, size: number) => ({ x: tPosSN(key).y * size, y: 7 * size - tPosSN(key).x * size });
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state: any) {
   return {
     square_selected: state.match.square_selected,
     status: state.match.status,
@@ -166,7 +174,7 @@ function mapStateToProps(state, props) {
   };
 }
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+const mapDispatchToProps: MapDispatchToProps<any, any> = {
   setSquareSelected: match.setSquareSelected,
   switchPlayer: match.switchPlayer,
   setDataFinished: match.setDataFinished,

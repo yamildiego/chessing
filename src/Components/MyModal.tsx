@@ -1,6 +1,12 @@
 import { StyleSheet, View, Modal } from "react-native";
 
-const MyModal = (props) => {
+interface MyModalProps {
+  visible: boolean;
+  children: React.ReactNode;
+  onRequestClose: () => void;
+}
+
+const MyModal = (props: MyModalProps) => {
   return (
     <Modal transparent={true} animationType="none" {...props}>
       <View style={styles.container}>{props.children}</View>

@@ -6,7 +6,11 @@ import * as match from "../Actions/match";
 import Logo from "../Components/Logo";
 import Button from "../Components/Button";
 
-const PlayOnlineScreen = (props) => {
+interface PlayOnlineScreenProps {
+  navigation: any;
+}
+
+const PlayOnlineScreen = (props: PlayOnlineScreenProps) => {
   const joinGame = () => props.navigation.navigate("ConfigOnlineScreen");
 
   const createGame = () => props.navigation.navigate("ConfigOnlineScreen");
@@ -42,9 +46,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: any) => ({});
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+const mapDispatchToProps: MapDispatchToProps<any, any> = {
   initializedBoard: match.initializedBoard,
 };
 

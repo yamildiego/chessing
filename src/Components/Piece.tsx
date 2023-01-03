@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { TypeOfPiece, Color } from "yd-chess-lib";
 
-const pieces = {
+const pieces: { [key: string]: string } = {
   [TypeOfPiece.PAWN]: "chess-pawn",
   [TypeOfPiece.ROOK]: "chess-rook",
   [TypeOfPiece.KNIGHT]: "chess-knight",
@@ -14,7 +14,14 @@ const pieces = {
   [TypeOfPiece.KING]: "chess-king",
 };
 
-const Piece = (props) => {
+interface PieceProps {
+  is_playing: Color;
+  flip: string;
+  piece: PieceType;
+  size: number;
+}
+
+const Piece = (props: PieceProps) => {
   const scaleAnimated = useRef(new Animated.Value(1));
 
   const animatedStyle =
@@ -24,7 +31,7 @@ const Piece = (props) => {
       ? { transform: [{ scaleY: -1 }, { scaleX: -1 }] }
       : {};
 
-  const onPress = (color) => {
+  const onPress = (color: Color) => {
     if (color === Color.WHITE)
       Animated.timing(scaleAnimated.current, {
         duration: 300,
@@ -70,7 +77,7 @@ const Piece = (props) => {
   );
 };
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state: any) {
   return {
     is_playing: state.match.is_playing,
     flip: state.config.flip,

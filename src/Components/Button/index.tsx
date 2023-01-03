@@ -1,7 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { primaryColor } from "../../Constants/MyColors";
 
-const Button = (props) => {
+interface ButtonProps {
+  disabled?: boolean;
+  bgColor?: string;
+  width?: number;
+  children: React.ReactNode;
+  onPress: () => void;
+}
+
+const Button = (props: ButtonProps) => {
   return (
     <TouchableOpacity
       disabled={props.disabled !== undefined ? props.disabled : false}

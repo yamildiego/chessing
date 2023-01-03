@@ -14,10 +14,21 @@ import black from "../Assets/black.png";
 
 import { Chess, TypeOfPiece, Color } from "yd-chess-lib";
 
-const times = { 300000: "5", 600000: "10", 900000: "15", 1800000: "30" };
-const flipOptions = { board: "Board", pieces: "Pieces" };
+const times: { [key: number]: string } = { 300000: "5", 600000: "10", 900000: "15", 1800000: "30" };
+const flipOptions: { [key: string]: string } = { board: "Board", pieces: "Pieces" };
 
-class ConfigOfflineScreen extends Component {
+interface ConfigOfflineScreenProps {
+  show_legal_moves: boolean;
+  time_per_player: number;
+  flip: string;
+  initializedBoard: () => void;
+  setShowLegalMoves: (value: boolean) => void;
+  setFlip: (value: string) => void;
+  setTimePerPlayer: (value: number) => void;
+  navigation: any;
+}
+
+class ConfigOfflineScreen extends Component<ConfigOfflineScreenProps> {
   toggleShowLegalMoves = () => this.props.setShowLegalMoves(!this.props.show_legal_moves);
 
   openGameLocal = () => {
@@ -27,7 +38,7 @@ class ConfigOfflineScreen extends Component {
   };
 
   render() {
-    const { pieces, time_per_player, show_legal_moves, flip } = this.props;
+    const { show_legal_moves, time_per_player, flip } = this.props;
     return (
       <View style={styles.container}>
         <View>
@@ -36,10 +47,8 @@ class ConfigOfflineScreen extends Component {
             <Text style={styles.label}>Show legal moves</Text>
             <Switch
               ios_backgroundColor="white"
-              style={{ color: "red" }}
               trackColor={{ false: "#767577", true: "#0b843936" }}
               thumbColor={show_legal_moves ? primaryColor : "#f4f3f4"}
-              color={primaryColor}
               onValueChange={this.toggleShowLegalMoves}
               value={show_legal_moves}
             />
@@ -71,10 +80,10 @@ class ConfigOfflineScreen extends Component {
                     <Button
                       width={80}
                       key={index}
-                      bgColor={time_per_player == key ? primaryColor : "grey"}
-                      onPress={() => this.props.setTimePerPlayer(key)}
+                      bgColor={time_per_player == parseInt(key) ? primaryColor : "grey"}
+                      onPress={() => this.props.setTimePerPlayer(parseInt(key))}
                     >
-                      {times[key]}
+                      {times[parseInt(key)]}
                     </Button>
                   );
                 })}
@@ -118,13 +127,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (state: any) => ({
   show_legal_moves: state.config.show_legal_moves,
   time_per_player: state.config.time_per_player,
   flip: state.config.flip,
 });
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+const mapDispatchToProps: MapDispatchToProps<any, any> = {
   setShowLegalMoves: config.setShowLegalMoves,
   setFlip: config.setFlip,
   setTimePerPlayer: config.setTimePerPlayer,

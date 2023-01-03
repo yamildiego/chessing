@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, ImageBackground, TouchableOpacity } from "react-native";
+import { StyleSheet, View, ImageBackground, TouchableOpacity, Text } from "react-native";
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 
 import Draggable from "./Draggable";
@@ -13,11 +13,22 @@ import black from "../Assets/black.png";
 
 import { Chess, tPosSN, tPosNS, Color } from "yd-chess-lib";
 
-const Board = (props) => {
-  const { board, pieces, is_playing, square_selected, show_legal_moves, status, sizeSquare, flip } = props;
-  const [pieceMoved, setPieceMoved] = useState(null);
+interface BoardProps {
+  board: Array<Array<string>>;
+  is_playing: Color;
+  square_selected: PieceType | null;
+  show_legal_moves: boolean;
+  status: string | null;
+  sizeSquare: number;
+  flip: string;
+  setPieceMoved: (value: { from: string; to: string } | null) => void;
+  setSquareSelected: (value: PieceType | null) => void;
+}
 
-  const highlight = (number, letter) => {
+const Board = (props: BoardProps) => {
+  const { board, is_playing, square_selected, show_legal_moves, status, sizeSquare, flip } = props;
+
+  const highlight = (number: number, letter: string) => {
     return (
       show_legal_moves &&
       square_selected != null &&
@@ -27,10 +38,10 @@ const Board = (props) => {
     );
   };
 
-  const isSelected = (number, letter) =>
+  const isSelected = (number: number, letter: string) =>
     show_legal_moves && square_selected != null && status == null && square_selected.key == `${8 - number}${letter}`;
 
-  const tryToMove = (number, letter) => {
+  const tryToMove = (number: number, letter: string) => {
     let posString = `${8 - number}${letter}`;
     let posNumber = tPosSN(posString);
     let square = Chess.getInstance().getSquare(posString);
@@ -45,51 +56,51 @@ const Board = (props) => {
   return (
     <View style={{ ...styles.board, ...animatedStyle }}>
       <View style={{ position: "relative" }}>
-        {Object.keys(board)
-          .reverse()
-          .map((row, number) => {
-            return (
-              <View key={`Row_${number}`} style={{ flexDirection: "row" }}>
-                {Object.keys(board[row]).map((letter, indexItem) => {
-                  return (
-                    <TouchableOpacity key={`Item_${indexItem}`} activeOpacity={1} onPress={() => tryToMove(number, letter)}>
-                      <ImageBackground source={(number + indexItem) % 2 == 0 ? white : black} resizeMode="cover" style={styles.image}>
-                        <View style={{ width: sizeSquare, height: sizeSquare }}>
-                          {highlight(number, letter) && <View style={{ ...styles.highlight, height: sizeSquare - 20 }} />}
-                          {isSelected(number, letter) && (
-                            <View
-                              style={{
-                                ...styles.highlight,
-                                margin: 5,
-                                width: sizeSquare - 10,
-                                height: sizeSquare - 10,
-                                backgroundColor: "#44444455",
-                              }}
-                            />
-                          )}
-                        </View>
-                      </ImageBackground>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            );
-          })}
+        {board.reverse().map((row, number) => {
+          return (
+            <View key={`Row_${number}`} style={{ flexDirection: "row" }}>
+              {row.map((letter, indexItem) => {
+                return (
+                  <TouchableOpacity key={`Item_${indexItem}`} activeOpacity={1} onPress={() => tryToMove(number, letter)}>
+                    <ImageBackground source={(number + indexItem) % 2 == 0 ? white : black} resizeMode="cover">
+                      <View style={{ width: sizeSquare, height: sizeSquare }}>
+                        {highlight(number, letter) && <View style={{ ...styles.highlight, height: sizeSquare - 20 }} />}
+                        {isSelected(number, letter) && (
+                          <View
+                            style={{
+                              ...styles.highlight,
+                              margin: 5,
+                              width: sizeSquare - 10,
+                              height: sizeSquare - 10,
+                              backgroundColor: "#44444455",
+                            }}
+                          />
+                        )}
+                      </View>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          );
+        })}
         <>
           {Chess.getInstance()
             .getChessboard()
             .map((row, indexX) =>
               row.map((item, indexY) => {
                 return (
-                  <Draggable
-                    isDraggable={item !== null && item.color === is_playing && item.movementsAllowed.length > 0 && status == null}
-                    size={sizeSquare}
-                    index={1}
-                    item={item}
-                    key={`item_${indexX}_${indexY}`}
-                  >
-                    <Piece size={sizeSquare} piece={item} is_playing={is_playing} />
-                  </Draggable>
+                  <React.Fragment key={`item_${indexX}_${indexY}`}>
+                    {item !== null && (
+                      <Draggable
+                        isDraggable={item !== null && item.color === is_playing && item.movementsAllowed.length > 0 && status == null}
+                        size={sizeSquare}
+                        item={item}
+                      >
+                        <Piece size={sizeSquare} piece={item} />
+                      </Draggable>
+                    )}
+                  </React.Fragment>
                 );
               })
             )}
@@ -113,19 +124,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (state: any) => ({
   board: state.game.board,
   is_playing: state.match.is_playing,
   square_selected: state.match.square_selected,
-  status: state.match.status,
   show_legal_moves: state.config.show_legal_moves,
+  status: state.match.status,
   sizeSquare: state.visual.sizeSquare,
   flip: state.config.flip,
 });
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+const mapDispatchToProps: MapDispatchToProps<any, any> = {
   setSquareSelected: match.setSquareSelected,
-  switchPlayer: match.switchPlayer,
   setPieceMoved: match.setPieceMoved,
 };
 

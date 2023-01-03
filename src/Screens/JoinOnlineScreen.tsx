@@ -1,11 +1,6 @@
 import React, { Component } from "react";
 import { Switch, StyleSheet, Text, View } from "react-native";
-import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 
-import * as config from "../Actions/config";
-import * as match from "../Actions/match";
-
-import { primaryColor } from "../Constants/MyColors";
 import Button from "../Components/Button";
 
 import background from "../Assets/background.jpg";
@@ -20,16 +15,18 @@ import { secondaryColor, logoColor, textColor } from "../Constants/MyColors";
 import logo from "../../assets/icon.png";
 
 const times = { 300000: "5", 600000: "10", 900000: "15", 1800000: "30" };
-const flipOptions = { board: "Board", pieces: "Pieces" };
 const size = Math.round(Dimensions.get("window").width * 0.06);
 
-class JoinOnlineScreen extends Component {
+interface JoinOnlineScreenProps {
+  navigation: any;
+}
+
+class JoinOnlineScreen extends Component<JoinOnlineScreenProps> {
   joinGame = () => this.props.navigation.navigate("ConfigOnlineScreen");
 
   createGame = () => this.props.navigation.navigate("ConfigOnlineScreen");
 
   render() {
-    const { pieces, time_per_player, show_legal_moves, flip } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.logo}>
@@ -74,17 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: AppState) => ({
-  show_legal_moves: state.config.show_legal_moves,
-  time_per_player: state.config.time_per_player,
-  flip: state.config.flip,
-});
-
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
-  setShowLegalMoves: config.setShowLegalMoves,
-  setFlip: config.setFlip,
-  setTimePerPlayer: config.setTimePerPlayer,
-  initializedBoard: match.initializedBoard,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(JoinOnlineScreen);
+export default JoinOnlineScreen;

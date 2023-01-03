@@ -9,7 +9,7 @@ const initialState = {
   code: null,
 };
 
-export default function config(state = initialState, action = {}) {
+export default function config(state = initialState, action: { type: string; value: any }) {
   const newState = cloneDeep(state);
   switch (action.type) {
     case TYPES.INITIALIZE_CONFIG:

@@ -7,7 +7,14 @@ import Button from "./Button";
 import * as match from "../Actions/match";
 import { Color } from "yd-chess-lib";
 
-const ModalWins = (props) => {
+interface ModalWinsProps {
+  winner: Color;
+  status: string;
+  modal_visible: boolean;
+  navigation: any;
+}
+
+const ModalWins = (props: ModalWinsProps) => {
   const { winner, modal_visible, status } = props;
   const Tcolor = winner === Color.BLACK ? "#fff" : "#343434";
   const bgColor = winner === Color.BLACK ? "#343434" : "#fff";
@@ -103,12 +110,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (state: any) => ({
   status: state.match.data_finished.status,
   winner: state.match.data_finished.winner,
   modal_visible: state.match.data_finished.modal_visible,
 });
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ModalWins);
+export default connect(mapStateToProps)(ModalWins);

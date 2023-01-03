@@ -6,7 +6,16 @@ import { Color } from "yd-chess-lib";
 
 import * as match from "../Actions/match";
 
-const PlayerInfo = (props) => {
+interface PlayerInfoProps {
+  is_playing: Color;
+  time_per_player: number;
+  playerMain: boolean;
+  color: Color;
+  status: string | null;
+  setDataFinished: (value: { status: string | null; winner: string | null; modal_visible: boolean }) => void;
+}
+
+const PlayerInfo = (props: PlayerInfoProps) => {
   const { is_playing, time_per_player, playerMain, color, status } = props;
   const fullNameColor = is_playing == Color.BLACK ? "black" : "white";
   const stylesContainer = is_playing == color ? { backgroundColor: fullNameColor, borderColor: fullNameColor } : {};
@@ -60,13 +69,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (state: any) => ({
   is_playing: state.match.is_playing,
   time_per_player: state.config.time_per_player,
   status: state.match.data_finished.status,
 });
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+const mapDispatchToProps: MapDispatchToProps<any, any> = {
   setDataFinished: match.setDataFinished,
 };
 

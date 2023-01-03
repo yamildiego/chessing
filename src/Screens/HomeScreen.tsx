@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect, MapStateToProps } from "react-redux";
+import { connect, MapDispatchToProps } from "react-redux";
 import { View, Text, StyleSheet, StatusBar, Dimensions } from "react-native";
 import { Avatar } from "react-native-paper";
 
@@ -13,7 +13,12 @@ import * as config from "../Actions/config";
 
 const size = Math.round(Dimensions.get("window").width * 0.06);
 
-class HomeScreen extends Component {
+interface HomeScreenProps {
+  inizialize: () => void;
+  navigation: any;
+}
+
+class HomeScreen extends Component<HomeScreenProps> {
   playOffline = () => {
     this.props.inizialize();
     this.props.navigation.navigate("ConfigOfflineScreen");
@@ -27,7 +32,7 @@ class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle={"dark-content"} style="auto" />
+        <StatusBar barStyle={"dark-content"} />
         <Logo />
         <View style={styles.subContainer}>
           <View style={styles.buttons}>
@@ -67,11 +72,11 @@ const styles = StyleSheet.create({
   },
 });
 
-function mapStateToProps(state, props) {
+function mapStateToProps() {
   return {};
 }
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+const mapDispatchToProps: MapDispatchToProps<any, any> = {
   inizialize: config.inizializeConfig,
 };
 

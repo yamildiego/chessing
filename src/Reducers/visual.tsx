@@ -10,7 +10,7 @@ const initialState = {
   sizeSquare: Math.round(windowWidth * 0.1175),
 };
 
-export default function visual(state = initialState, action = {}) {
+export default function visual(state = initialState, action: { type: string; value: any }) {
   switch (action.type) {
     default:
       return state;

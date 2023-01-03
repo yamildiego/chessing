@@ -13,7 +13,7 @@ const initialState = {
   pawn_promotion_position: null,
 };
 
-export default function game(state = initialState, action = {}) {
+export default function game(state = initialState, action: { type: string; value: any }) {
   const newState = cloneDeep(state);
   switch (action.type) {
     case TYPES.INITIALIZE_BOARD:

@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { connect, MapDispatchToProps } from "react-redux";
 import { StyleSheet, View, ImageBackground, Alert, BackHandler } from "react-native";
 
 import Board from "../Components/Board";
@@ -13,8 +13,19 @@ import * as match from "../Actions/match";
 import background from "../Assets/background.jpg";
 import { Color } from "yd-chess-lib";
 
-class LocalGameScreen extends React.Component {
-  constructor(props) {
+interface LocalGameScreenProps {
+  flip: string;
+  offer_a_draw: boolean;
+  ask_for_resign: boolean;
+  is_playing: Color;
+  setOfferADraw: (value: boolean) => void;
+  setAskForResign: (value: boolean) => void;
+  setDataFinished: (value: { status: string | null; winner: string | null; modal_visible: boolean }) => void;
+  navigation: any;
+}
+
+class LocalGameScreen extends React.Component<LocalGameScreenProps> {
+  constructor(props: LocalGameScreenProps) {
     super(props);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
   }
@@ -113,7 +124,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state: any) {
   return {
     flip: state.config.flip,
     offer_a_draw: state.match.offer_a_draw,
@@ -123,7 +134,7 @@ function mapStateToProps(state, props) {
   };
 }
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+const mapDispatchToProps: MapDispatchToProps<any, any> = {
   setOfferADraw: match.setOfferADraw,
   setAskForResign: match.setAskForResign,
   setDataFinished: match.setDataFinished,

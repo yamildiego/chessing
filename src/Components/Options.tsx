@@ -1,11 +1,21 @@
 import { StyleSheet, View, Text, TouchableOpacity, Alert } from "react-native";
-import { connect } from "react-redux";
+import { connect, MapDispatchToProps } from "react-redux";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import * as match from "../Actions/match";
 import { Color } from "yd-chess-lib";
 
-const Options = (props) => {
+interface OptionsProps {
+  sizeScreen: number;
+  marginScreen: number;
+  playerMain: boolean;
+  color: Color;
+  is_playing: Color;
+  setAskForResign: (value: boolean) => void;
+  setOfferADraw: (value: boolean) => void;
+}
+
+const Options = (props: OptionsProps) => {
   const { sizeScreen, marginScreen, playerMain, color, is_playing } = props;
   const transformFlip = { transform: !playerMain ? [{ scaleX: -1 }, { scaleY: -1 }] : [] };
 
@@ -49,7 +59,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state: any) {
   return {
     sizeScreen: state.visual.sizeScreen,
     marginScreen: state.visual.marginScreen,
@@ -57,7 +67,7 @@ function mapStateToProps(state, props) {
   };
 }
 
-const mapDispatchToProps: MapDispatchToProps<DispatchProps, OwnProps> = {
+const mapDispatchToProps: MapDispatchToProps<any, any> = {
   setOfferADraw: match.setOfferADraw,
   setAskForResign: match.setAskForResign,
   setDataFinished: match.setDataFinished,
