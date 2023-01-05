@@ -15,7 +15,7 @@ import black from "../Assets/black.png";
 import { Chess, TypeOfPiece, Color } from "yd-chess-lib";
 
 const times: { [key: number]: string } = { 300000: "5", 600000: "10", 900000: "15", 1800000: "30" };
-const flipOptions: { [key: string]: string } = { board: "Board", pieces: "Pieces" };
+const flipOptions: { [key: string]: string } = { pieces: "Pieces", board: "Board" };
 
 interface ConfigOfflineScreenProps {
   show_legal_moves: boolean;

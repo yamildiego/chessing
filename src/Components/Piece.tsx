@@ -77,7 +77,7 @@ const Piece = (props: PieceProps) => {
   );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: StateType) {
   return {
     is_playing: state.match.is_playing,
     flip: state.config.flip,

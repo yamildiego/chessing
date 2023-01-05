@@ -5,22 +5,24 @@ interface ButtonProps {
   disabled?: boolean;
   bgColor?: string;
   width?: number;
-  children: React.ReactNode;
-  onPress: () => void;
+  children?: React.ReactNode;
+  title?: React.ReactNode;
+  onPress?: () => void;
 }
 
 const Button = (props: ButtonProps) => {
+  const { disabled, bgColor, width, children, title } = props;
   return (
     <TouchableOpacity
-      disabled={props.disabled !== undefined ? props.disabled : false}
+      disabled={disabled !== undefined ? disabled : false}
       onPress={props.onPress}
       style={{
         ...styles.button,
-        backgroundColor: props.bgColor != undefined ? props.bgColor : primaryColor,
-        width: props.width != undefined ? props.width : "100%",
+        backgroundColor: bgColor != undefined ? bgColor : primaryColor,
+        width: width != undefined ? width : "100%",
       }}
     >
-      <Text style={styles.buttonText}>{props.children}</Text>
+      <Text style={styles.buttonText}>{title !== undefined ? title : children}</Text>
     </TouchableOpacity>
   );
 };

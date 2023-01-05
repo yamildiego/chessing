@@ -1,42 +1,108 @@
 import React, { Component } from "react";
-import { Switch, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View, Text, ActivityIndicator, TextInput, BackHandler, Alert } from "react-native";
+import { connect, MapDispatchToProps } from "react-redux";
 
 import Button from "../Components/Button";
+import Logo from "../Components/Logo";
 
-import background from "../Assets/background.jpg";
-import white from "../Assets/white.png";
-import black from "../Assets/black.png";
-
-import { Chess, TypeOfPiece, Color } from "yd-chess-lib";
-
-import { StatusBar, Dimensions } from "react-native";
-import { Avatar } from "react-native-paper";
-import { secondaryColor, logoColor, textColor } from "../Constants/MyColors";
-import logo from "../../assets/icon.png";
-
-const times = { 300000: "5", 600000: "10", 900000: "15", 1800000: "30" };
-const size = Math.round(Dimensions.get("window").width * 0.06);
+import * as match from "../Actions/match";
+import * as online from "../Actions/online";
 
 interface JoinOnlineScreenProps {
+  code: string;
+  players: Array<PlayerType>;
+  joinGame: (code: string) => void;
+  updateStatus: (code: string) => void;
+  initializedBoard: () => void;
+  inizialize: () => void;
   navigation: any;
 }
 
 class JoinOnlineScreen extends Component<JoinOnlineScreenProps> {
-  joinGame = () => this.props.navigation.navigate("ConfigOnlineScreen");
+  state = { code: "" };
+  private interval: ReturnType<typeof setInterval>;
 
-  createGame = () => this.props.navigation.navigate("ConfigOnlineScreen");
+  constructor(props: JoinOnlineScreenProps) {
+    super(props);
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
+    this.interval = setInterval(this.updateStatus, 4000);
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", this.handleBackButtonClick);
+    if (this.props.code !== null) this.props.joinGame(this.props.code);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this.handleBackButtonClick);
+  }
+
+  updateStatus = () => {
+    if (this.props.code !== null) this.props.updateStatus(this.props.code);
+  };
+
+  handleBackButtonClick() {
+    if (this.props.navigation.isFocused()) {
+      if (this.props.code !== null) {
+        Alert.alert("Quit Game", "Are you sure?", [
+          {
+            text: "OK",
+            onPress: () => {
+              clearInterval(this.interval);
+              this.props.initializedBoard();
+              this.props.inizialize();
+              this.props.navigation.navigate("PlayOnlineScreen");
+            },
+          },
+          { text: "Cancel", onPress: () => {} },
+        ]);
+      } else {
+        clearInterval(this.interval);
+        this.props.navigation.goBack();
+      }
+    }
+  }
+
+  componentDidUpdate = (oldProps: JoinOnlineScreenProps) => {
+    if (oldProps.players.length !== this.props.players.length && this.props.players.length == 2) {
+      clearInterval(this.interval);
+      console.log("redirrecionar ongline game");
+    }
+  };
+
+  joinGame = () => {
+    if (this.state.code !== null) this.props.joinGame(this.state.code);
+  };
 
   render() {
+    const { code } = this.props;
     return (
       <View style={styles.container}>
-        <View style={styles.logo}>
-          <Avatar.Image style={{ backgroundColor: "transparent" }} size={size * 5} source={logo} />
-          <Text style={{ ...styles.title, color: logoColor, fontSize: size, lineHeight: size * 2 }}>Chessing</Text>
-        </View>
+        <Logo />
+        {code !== null && (
+          <View>
+            <Text style={styles.codeText}>{`Game code: ${code}`}</Text>
+            <Text style={styles.waitingText}>Waiting for opponent</Text>
+          </View>
+        )}
+
+        {code == null && (
+          <View style={{ alignItems: "center" }}>
+            <TextInput
+              value={this.state.code}
+              onChange={(event) => this.setState({ code: event.nativeEvent.text })}
+              autoCapitalize={"characters"}
+              style={{ fontSize: 20 }}
+              autoFocus={true}
+              placeholder="Enter game code"
+            />
+          </View>
+        )}
+
         <View style={styles.subContainer}>
           <View style={styles.buttons}>
-            <Button onPress={this.joinGame}>Join game</Button>
-            <Button onPress={this.createGame}>Create game</Button>
+            {code == null && <Button onPress={this.joinGame}>Join game</Button>}
+            {code !== null && <Button title={<ActivityIndicator color={"#fff"} />}></Button>}
           </View>
         </View>
       </View>
@@ -53,16 +119,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-end",
-    marginBottom: 10,
   },
-  logo: {
-    marginTop: 38,
-    flex: 4,
-    justifyContent: "center",
-    alignItems: "center",
+  codeText: {
+    textAlign: "center",
+    fontSize: 20,
+    color: "#222",
   },
-  title: {
-    fontFamily: "CCKillJoy",
+  waitingText: {
+    textAlign: "center",
+    fontSize: 20,
+    color: "#222",
+    marginTop: 20,
   },
   buttons: {
     flexDirection: "column",
@@ -71,4 +138,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default JoinOnlineScreen;
+const mapStateToProps = (state: any) => ({
+  code: state.online.code,
+  players: state.online.status.players,
+});
+
+const mapDispatchToProps: MapDispatchToProps<any, any> = {
+  initializedBoard: match.initializedBoard,
+  inizialize: online.inizialize,
+  joinGame: online.joinGame,
+  updateStatus: online.updateStatus,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(JoinOnlineScreen);

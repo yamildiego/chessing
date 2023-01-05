@@ -164,10 +164,10 @@ const styles = StyleSheet.create({ itemDraggable: { overflow: "hidden" } });
 
 const getPositionPixeles = (key: string, size: number) => ({ x: tPosSN(key).y * size, y: 7 * size - tPosSN(key).x * size });
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: StateType) {
   return {
     square_selected: state.match.square_selected,
-    status: state.match.status,
+    status: state.match.data_finished.status,
     piece_moved: state.match.piece_moved,
     sizeSquare: state.visual.sizeSquare,
     flip: state.config.flip,

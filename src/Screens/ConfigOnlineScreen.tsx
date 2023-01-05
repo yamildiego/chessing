@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Switch, StyleSheet, Text, View, ActivityIndicator } from "react-native";
-import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
+import { connect, MapDispatchToProps } from "react-redux";
 
 import * as config from "../Actions/config";
 import * as match from "../Actions/match";
+import * as online from "../Actions/online";
 
 import { primaryColor } from "../Constants/MyColors";
 import Button from "../Components/Button";
@@ -20,13 +21,19 @@ interface ConfigOnlineScreenProps {
   show_legal_moves: boolean;
   time_per_player: number;
   is_loading: boolean;
+  code: string | null;
   createGame: () => void;
   setShowLegalMoves: (value: boolean) => void;
   setTimePerPlayer: (value: number) => void;
+  navigation: any;
 }
 
 class ConfigOnlineScreen extends Component<ConfigOnlineScreenProps> {
   createGame = () => this.props.createGame();
+
+  componentDidUpdate = (oldProps: ConfigOnlineScreenProps) => {
+    if (oldProps.code == null && oldProps.code !== this.props.code) this.props.navigation.navigate("JoinOnlineScreen");
+  };
 
   render() {
     const { show_legal_moves, time_per_player, is_loading } = this.props;
@@ -107,14 +114,15 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state: any) => ({
   show_legal_moves: state.config.show_legal_moves,
   time_per_player: state.config.time_per_player,
-  is_loading: state.config.is_loading,
+  is_loading: state.online.is_loading,
+  code: state.online.code,
 });
 
 const mapDispatchToProps: MapDispatchToProps<any, any> = {
   setShowLegalMoves: config.setShowLegalMoves,
   setFlip: config.setFlip,
   setTimePerPlayer: config.setTimePerPlayer,
-  createGame: config.createGame,
+  createGame: online.createGame,
   initializedBoard: match.initializedBoard,
 };
 

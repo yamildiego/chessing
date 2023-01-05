@@ -124,17 +124,17 @@ const styles = StyleSheet.create({
   },
 });
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: StateType) {
   return {
     flip: state.config.flip,
     offer_a_draw: state.match.offer_a_draw,
     ask_for_resign: state.match.ask_for_resign,
     is_playing: state.match.is_playing,
-    winner: state.match.winner,
+    winner: state.match.data_finished.winner,
   };
 }
 
-const mapDispatchToProps: MapDispatchToProps<any, any> = {
+const mapDispatchToProps: MapDispatchToProps<any, StateType> = {
   setOfferADraw: match.setOfferADraw,
   setAskForResign: match.setAskForResign,
   setDataFinished: match.setDataFinished,

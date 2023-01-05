@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: StateType) {
   return {
     sizeScreen: state.visual.sizeScreen,
     marginScreen: state.visual.marginScreen,

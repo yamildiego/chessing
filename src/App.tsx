@@ -17,10 +17,12 @@ import ConfigOfflineScreen from "./Screens/ConfigOfflineScreen";
 import ConfigOnlineScreen from "./Screens/ConfigOnlineScreen";
 import PlayOnlineScreen from "./Screens/PlayOnlineScreen";
 import LocalGameScreen from "./Screens/LocalGameScreen";
+import JoinOnlineScreen from "./Screens/JoinOnlineScreen";
 
 import { secondaryColor } from "./Constants/MyColors";
 
 const store = createStore(rootReducers, composeWithDevTools(applyMiddleware(thunk)));
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -77,6 +79,16 @@ export default function App() {
               }}
               name="ConfigOnlineScreen"
               component={ConfigOnlineScreen}
+            />
+            <Stack.Screen
+              options={{
+                headerStyle: { backgroundColor: "#fff" },
+                headerTintColor: secondaryColor,
+                title: "Join game",
+                headerTitleStyle: { fontFamily: "Ubuntu" },
+              }}
+              name="JoinOnlineScreen"
+              component={JoinOnlineScreen}
             />
             <Stack.Screen options={{ headerShown: false }} name="LocalGameScreen" component={LocalGameScreen} />
           </Stack.Navigator>
