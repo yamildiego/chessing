@@ -6,6 +6,7 @@ import { Chess, tPosNS, tPosSN, Color } from "yd-chess-lib";
 import Piece from "./Piece";
 
 import * as match from "../Actions/match";
+import * as online from "../Actions/online";
 
 interface DraggableProps {
   item: PieceType;
@@ -15,7 +16,8 @@ interface DraggableProps {
   status: string | null;
   size_square: number;
   flip: string;
-  children: React.ReactNode;
+  is_offline: boolean;
+  code: string;
   switchPlayer: () => void;
   setPieceMoved: (value: { from: string; to: string } | null) => void;
   setSquareSelected: (value: PieceType | null) => void;
@@ -25,7 +27,19 @@ interface DraggableProps {
 
 const Draggable = (props: DraggableProps) => {
   const [zIndex, setZIndex] = useState(0);
-  const { item, square_selected, isDraggable, piece_moved, status, size_square, flip } = props;
+  const {
+    item,
+    square_selected,
+    isDraggable,
+    piece_moved,
+    status,
+    size_square,
+    flip,
+    is_offline,
+    code,
+    main_player_color,
+    piece_moved_online,
+  } = props;
 
   const getOpponent = (color: Color) => (color == Color.WHITE ? Color.BLACK : Color.WHITE);
 
@@ -45,7 +59,8 @@ const Draggable = (props: DraggableProps) => {
         props.setSquareSelected(item);
     },
     onPanResponderMove: (evt, gesture) => {
-      let order = flip == "board" && item.color == Color.BLACK ? -1 : 1;
+      let order =
+        (!is_offline && main_player_color == Color.BLACK) || (is_offline && flip == "board" && item.color == Color.BLACK) ? -1 : 1;
       pan.setValue({ x: gesture.dx * order, y: gesture.dy * order });
     },
     onPanResponderRelease: (evt, gestureState) => {
@@ -71,11 +86,10 @@ const Draggable = (props: DraggableProps) => {
         if (item.movementsAllowed.includes(newPositionText) && status == null) {
           Animated.spring(pan, {
             toValue: { ...getPositionPixeles(newPositionText, size_square) },
-            useNativeDriver: false,
-          }).start();
-          setTimeout(() => {
+            useNativeDriver: true,
+          }).start(() => {
             movePiece(`${item.key}x${newPositionText}`, item.color, getOpponent(item.color));
-          }, 150);
+          });
         } else {
           let positionTest = { x: 8 - positionMovedY, y: positionMovedX };
 
@@ -87,7 +101,7 @@ const Draggable = (props: DraggableProps) => {
 
             Animated.spring(pan, {
               toValue: { ...getPositionPixeles(item.key, size_square) },
-              useNativeDriver: false,
+              useNativeDriver: true,
             }).start();
           }
         }
@@ -105,7 +119,13 @@ const Draggable = (props: DraggableProps) => {
         let isDraw = Chess.getInstance().isDraw(colorOpponent);
         if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
         if (isInCheckMate) props.setDataFinished({ status: "Checkmate", winner: colorCurrentPlayer, modal_visible: true });
-        else {
+
+        if (!is_offline) {
+          props.addMovement(code, p_movement, () => {
+            props.setPieceMoved(null);
+            //loading en  algun lado en false
+          });
+        } else {
           props.setPieceMoved(null);
           props.switchPlayer();
         }
@@ -113,21 +133,58 @@ const Draggable = (props: DraggableProps) => {
     }
   };
 
+  const movePieceOnline = (p_movement: string) => {
+    let moved = Chess.getInstance().move(p_movement);
+    if (moved) {
+      let isInCheckMate = Chess.getInstance().isInCheckMate(main_player_color);
+      let isDraw = Chess.getInstance().isDraw(main_player_color);
+      if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
+
+      console.log("isInCheckMate", isInCheckMate);
+      console.log("main_player_color", main_player_color);
+      console.log("isDraw", isDraw);
+
+      if (isInCheckMate) {
+        let winner = main_player_color == Color.WHITE ? Color.BLACK : Color.WHITE;
+        props.setDataFinished({ status: "Checkmate", winner, modal_visible: true });
+      }
+    }
+  };
+
   useEffect(() => {
     pan.setValue({ ...getPositionPixeles(item.key, size_square) });
+  }, [item]);
 
+  useEffect(() => {
     if (piece_moved !== null && piece_moved.from === item.key && status == null) {
       Animated.spring(pan, {
         toValue: { ...getPositionPixeles(piece_moved.to, size_square) },
-        useNativeDriver: false,
-        velocity: 150,
-        restSpeedThreshold: 20,
-        restDisplacementThreshold: 15,
+        useNativeDriver: true,
+        speed: 35,
       }).start(() => {
-        setTimeout(() => movePiece(`${piece_moved.from}x${piece_moved.to}`, item.color, getOpponent(item.color)), 150);
+        movePiece(`${piece_moved.from}x${piece_moved.to}`, item.color, getOpponent(item.color));
+        // setTimeout(() => , 150);
       });
     }
-  }, [item, piece_moved]);
+  }, [piece_moved]);
+
+  useEffect(() => {
+    // console.log(piece_moved_online);
+    if (piece_moved_online !== null && piece_moved_online.from === item.key && status == null) {
+      Animated.spring(pan, {
+        toValue: { ...getPositionPixeles(piece_moved_online.to, size_square) },
+        useNativeDriver: true,
+      }).start(() => {
+        movePieceOnline(`${piece_moved_online.from}x${piece_moved_online.to}`, item.color, getOpponent(item.color));
+        console.log("animateion");
+        console.log("animateion");
+        console.log("animateion");
+        console.log("animateion");
+        // setTimeout(() =>
+        // , 150);
+      });
+    }
+  }, [piece_moved_online]);
 
   const tryToMove = (p_item: PieceType) => {
     if (square_selected !== null && status == null && piece_moved == null) {
@@ -175,8 +232,12 @@ function mapStateToProps(state: StateType) {
     square_selected: state.match.square_selected,
     status: state.match.data_finished.status,
     piece_moved: state.match.piece_moved,
+    piece_moved_online: state.online.piece_moved,
     size_square: state.visual.size_square,
     flip: state.config.flip,
+    is_offline: state.online.code == null,
+    code: state.online.code,
+    main_player_color: state.online.main_player_color,
   };
 }
 
@@ -186,6 +247,7 @@ const mapDispatchToProps: MapDispatchToProps<any, any> = {
   setDataFinished: match.setDataFinished,
   setPawnPromotionPosition: match.setPawnPromotionPosition,
   setPieceMoved: match.setPieceMoved,
+  addMovement: online.addMovement,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Draggable);

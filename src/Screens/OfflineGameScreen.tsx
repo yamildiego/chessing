@@ -2,7 +2,7 @@ import React from "react";
 import { connect, MapDispatchToProps } from "react-redux";
 import { StyleSheet, View, ImageBackground, Alert, BackHandler } from "react-native";
 
-import Board from "../Components/Board";
+import Chessboard from "../Components/Chessboard";
 import PlayersInfo from "../Components/PlayersInfo";
 import ModalWins from "../Components/ModalWins";
 import ModalPromotePawn from "../Components/ModalPromotePawn";
@@ -13,7 +13,7 @@ import * as match from "../Actions/match";
 import background from "../Assets/background.jpg";
 import { Color } from "yd-chess-lib";
 
-interface LocalGameScreenProps {
+interface OfflineGameScreenProps {
   flip: string;
   offer_a_draw: boolean;
   ask_for_resign: boolean;
@@ -24,8 +24,8 @@ interface LocalGameScreenProps {
   navigation: any;
 }
 
-class LocalGameScreen extends React.Component<LocalGameScreenProps> {
-  constructor(props: LocalGameScreenProps) {
+class OfflineGameScreen extends React.Component<OfflineGameScreenProps> {
+  constructor(props: OfflineGameScreenProps) {
     super(props);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
   }
@@ -107,7 +107,7 @@ class LocalGameScreen extends React.Component<LocalGameScreenProps> {
           </>
         )}
         {flip !== "pieces" && <View style={{ flex: 2 }}></View>}
-        <Board />
+        <Chessboard />
         <PlayersInfo playerMain={true} />
         <Options playerMain={true} color={flip == "pieces" ? Color.WHITE : is_playing} />
       </ImageBackground>
@@ -140,4 +140,4 @@ const mapDispatchToProps: MapDispatchToProps<any, StateType> = {
   setDataFinished: match.setDataFinished,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LocalGameScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(OfflineGameScreen);

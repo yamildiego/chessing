@@ -35,16 +35,18 @@ const Piece = (props: PieceProps) => {
   const onPress = (color: Color) => {
     if (color === Color.WHITE)
       Animated.timing(scaleAnimated.current, {
-        duration: 300,
+        duration: 100,
         toValue: 1,
-        useNativeDriver: false,
+        useNativeDriver: true,
+        speed: 120,
       }).start();
 
     if (color === Color.BLACK)
       Animated.timing(scaleAnimated.current, {
-        duration: 300,
+        duration: 100,
         toValue: -1,
-        useNativeDriver: false,
+        useNativeDriver: true,
+        speed: 120,
       }).start();
   };
 

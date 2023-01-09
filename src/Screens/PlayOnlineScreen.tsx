@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { connect, MapDispatchToProps } from "react-redux";
+import { Chess } from "yd-chess-lib";
 
 import * as match from "../Actions/match";
 import * as online from "../Actions/online";
@@ -16,12 +17,14 @@ interface PlayOnlineScreenProps {
 
 const PlayOnlineScreen = (props: PlayOnlineScreenProps) => {
   const joinGame = () => {
+    Chess.getInstance().reStart();
     props.initializedBoard();
     props.inizialize();
     props.navigation.navigate("JoinOnlineScreen");
   };
 
   const createGame = () => {
+    Chess.getInstance().reStart();
     props.initializedBoard();
     props.inizialize();
     props.navigation.navigate("ConfigOnlineScreen");

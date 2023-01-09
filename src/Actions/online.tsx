@@ -19,6 +19,8 @@ export const setMainPlayerColor = (value: string) => ({ type: TYPES.SET_MAIN_PLA
 
 export const setPieceMovedOnline = (value: { from: string; to: string } | null) => ({ type: TYPES.SET_PIECE_MOVED_ONLINE, value });
 
+export const setAnimating = (value: boolean) => ({ type: TYPES.SET_ANIMATING, value });
+
 export const createGame = () => {
   return (dispatch: Dispatch) => {
     dispatch(setIsLoading(true));
@@ -51,6 +53,7 @@ export const joinGame = (code: string) => {
           dispatch(setStatus(response.data.data));
           dispatch(setMainPlayerColor(mainPlayer.color));
         } else {
+          console.log(response.data);
           console.log("joinGame paso un error pusheable");
         }
         dispatch(setIsLoading(false));
@@ -74,7 +77,10 @@ export const updateStatus = (code: string) => {
           if (response.data.data.movements == null) {
             dispatch(match.setPlayer(Color.WHITE));
           } else {
-            let len = JSON.parse(response.data.data.movements).length;
+            console.log(response.data.data.movements);
+            let len = 0;
+            if (response.data.data.movements !== null) len = JSON.parse(response.data.data.movements).length;
+
             if (len % 2 == 0) dispatch(match.setPlayer(Color.WHITE));
             else dispatch(match.setPlayer(Color.BLACK));
           }

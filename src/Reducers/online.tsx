@@ -7,6 +7,7 @@ const initialState = {
   on_progress: false,
   main_player_color: null,
   piece_moved: null,
+  animating: false,
   status: {
     players: [],
     history: [],
@@ -31,6 +32,8 @@ export default function online(state = initialState, action: { type: string; val
       return { ...newState, main_player_color: action.value };
     case TYPES.SET_PIECE_MOVED_ONLINE:
       return { ...newState, piece_moved: action.value };
+    case TYPES.SET_ANIMATING:
+      return { ...newState, animating: action.value };
     default:
       return state;
   }

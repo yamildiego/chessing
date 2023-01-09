@@ -2,7 +2,7 @@ import React from "react";
 import { connect, MapDispatchToProps } from "react-redux";
 import { StyleSheet, View, ImageBackground, Alert, BackHandler, Text } from "react-native";
 
-import Board from "../Components/Board";
+import Chessboard from "../Components/Chessboard";
 import PlayersInfo from "../Components/PlayersInfo";
 import ModalWins from "../Components/ModalWins";
 import ModalPromotePawn from "../Components/ModalPromotePawn";
@@ -33,7 +33,7 @@ class OnlineGameScreen extends React.Component<OnlineGameScreenProps> {
   }
 
   componentDidMount() {
-    this.interval = setInterval(this.updateStatus, 4000);
+    this.interval = setInterval(this.updateStatus, 500);
     let history = Chess.getInstance().getHistory();
     let movements = this.props.status.movements;
     if (history.length == 0 && movements !== null) JSON.parse(movements).forEach((movement) => Chess.getInstance().move(movement));
@@ -47,7 +47,8 @@ class OnlineGameScreen extends React.Component<OnlineGameScreenProps> {
   }
 
   updateStatus = () => {
-    if (this.props.code !== null && this.props.on_progress == false) this.props.updateStatus(this.props.code);
+    if (this.props.code !== null && this.props.on_progress == false && this.props.square_selected == null && this.props.animating == false)
+      this.props.updateStatus(this.props.code);
   };
 
   // handleBackButtonClick() {
@@ -112,11 +113,11 @@ class OnlineGameScreen extends React.Component<OnlineGameScreenProps> {
         {/* <ModalPromotePawn /> */}
         {/* {this.props.offer_a_draw ? this.showAlertOfferADraw() : ""} */}
         {/* {this.props.ask_for_resign ? this.showAlertAskForResign() : ""} */}
-        <Text style={{ fontSize: 25, color: "white" }}>{JSON.stringify(this.props.status)}</Text>
         <View style={{ flex: 2 }}></View>
-        <Board />
+        <Chessboard />
         <PlayersInfo playerMain={true} />
-        <Options playerMain={true} color={is_playing} />
+        <View style={{ flex: 2 }}></View>
+        {/* <Options playerMain={true} color={is_playing} /> */}
       </ImageBackground>
     );
   }
@@ -137,11 +138,13 @@ function mapStateToProps(state: StateType) {
     offer_a_draw: state.match.offer_a_draw,
     ask_for_resign: state.match.ask_for_resign,
     is_playing: state.match.is_playing,
+    square_selected: state.match.square_selected,
     winner: state.match.data_finished.winner,
     code: state.online.code,
     // players: state.online.status.players,
     on_progress: state.online.on_progress,
     status: state.online.status,
+    animating: state.online.animating,
   };
 }
 

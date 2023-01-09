@@ -16,7 +16,7 @@ import HomeScreen from "./Screens/HomeScreen";
 import ConfigOfflineScreen from "./Screens/ConfigOfflineScreen";
 import ConfigOnlineScreen from "./Screens/ConfigOnlineScreen";
 import PlayOnlineScreen from "./Screens/PlayOnlineScreen";
-import LocalGameScreen from "./Screens/LocalGameScreen";
+import OfflineGameScreen from "./Screens/OfflineGameScreen";
 import OnlineGameScreen from "./Screens/OnlineGameScreen";
 import JoinOnlineScreen from "./Screens/JoinOnlineScreen";
 
@@ -92,7 +92,7 @@ export default function App() {
               component={JoinOnlineScreen}
             />
             <Stack.Screen options={{ headerShown: false }} name="OnlineGameScreen" component={OnlineGameScreen} />
-            <Stack.Screen options={{ headerShown: false }} name="LocalGameScreen" component={LocalGameScreen} />
+            <Stack.Screen options={{ headerShown: false }} name="OfflineGameScreen" component={OfflineGameScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

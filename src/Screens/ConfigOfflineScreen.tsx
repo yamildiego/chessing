@@ -31,10 +31,10 @@ interface ConfigOfflineScreenProps {
 class ConfigOfflineScreen extends Component<ConfigOfflineScreenProps> {
   toggleShowLegalMoves = () => this.props.setShowLegalMoves(!this.props.show_legal_moves);
 
-  openGameLocal = () => {
+  openGameOffline = () => {
     Chess.getInstance().reStart();
     this.props.initializedBoard();
-    this.props.navigation.navigate("LocalGameScreen");
+    this.props.navigation.navigate("OfflineGameScreen");
   };
 
   render() {
@@ -91,7 +91,7 @@ class ConfigOfflineScreen extends Component<ConfigOfflineScreenProps> {
             </View>
           </View>
         </View>
-        <Button onPress={() => this.openGameLocal()}>Play</Button>
+        <Button onPress={() => this.openGameOffline()}>Play</Button>
       </View>
     );
   }
