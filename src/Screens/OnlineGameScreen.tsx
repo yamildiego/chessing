@@ -18,9 +18,14 @@ interface OnlineGameScreenProps {
   offer_a_draw: boolean;
   ask_for_resign: boolean;
   is_playing: Color;
+  code: string | null;
+  on_progress: boolean;
+  square_selected: PieceType | null;
+  status: { players: Array<PlayerType>; history: string; last_movement: string | null };
   setOfferADraw: (value: boolean) => void;
   setAskForResign: (value: boolean) => void;
   setDataFinished: (value: { status: string | null; winner: string | null; modal_visible: boolean }) => void;
+  updateStatus: (code: string) => void;
   navigation: any;
 }
 
@@ -29,14 +34,15 @@ class OnlineGameScreen extends React.Component<OnlineGameScreenProps> {
 
   constructor(props: OnlineGameScreenProps) {
     super(props);
+    this.interval = setInterval(this.updateStatus, 500);
     // this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
   }
 
   componentDidMount() {
-    this.interval = setInterval(this.updateStatus, 500);
-    let history = Chess.getInstance().getHistory();
-    let movements = this.props.status.movements;
-    if (history.length == 0 && movements !== null) JSON.parse(movements).forEach((movement) => Chess.getInstance().move(movement));
+    let historyGlobal = Chess.getInstance().getHistory();
+    let history = this.props.status.history;
+    if (historyGlobal.length == 0 && history !== null)
+      JSON.parse(history).forEach((movement: string) => Chess.getInstance().move(movement));
 
     //   BackHandler.addEventListener("hardwareBackPress", this.handleBackButtonClick);
   }
@@ -47,7 +53,7 @@ class OnlineGameScreen extends React.Component<OnlineGameScreenProps> {
   }
 
   updateStatus = () => {
-    if (this.props.code !== null && this.props.on_progress == false && this.props.square_selected == null && this.props.animating == false)
+    if (this.props.code !== null && this.props.on_progress == false && this.props.square_selected == null)
       this.props.updateStatus(this.props.code);
   };
 
@@ -141,10 +147,8 @@ function mapStateToProps(state: StateType) {
     square_selected: state.match.square_selected,
     winner: state.match.data_finished.winner,
     code: state.online.code,
-    // players: state.online.status.players,
     on_progress: state.online.on_progress,
     status: state.online.status,
-    animating: state.online.animating,
   };
 }
 

@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: StateType) => ({
   show_legal_moves: state.config.show_legal_moves,
   time_per_player: state.config.time_per_player,
   flip: state.config.flip,

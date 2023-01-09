@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: StateType) => ({
   status: state.match.data_finished.status,
   winner: state.match.data_finished.winner,
   modal_visible: state.match.data_finished.modal_visible,

@@ -35,7 +35,10 @@ type StateType = {
   online: {
     is_loading: boolean;
     code: string | null;
-    status: { players: Array<PlayerType>; history: Array<string>; last_movement: string | null };
+    on_progress: boolean;
+    main_player_color: Color | null;
+    piece_moved: string | null;
+    status: { players: Array<PlayerType>; history: string; last_movement: string | null };
   };
 };
 

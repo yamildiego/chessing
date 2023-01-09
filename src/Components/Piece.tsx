@@ -19,6 +19,8 @@ interface PieceProps {
   flip: string;
   piece: PieceType;
   size_square: number;
+  is_offline: boolean;
+  main_player_color: Color;
 }
 
 const Piece = (props: PieceProps) => {

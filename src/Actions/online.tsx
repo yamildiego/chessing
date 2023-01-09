@@ -19,8 +19,6 @@ export const setMainPlayerColor = (value: string) => ({ type: TYPES.SET_MAIN_PLA
 
 export const setPieceMovedOnline = (value: { from: string; to: string } | null) => ({ type: TYPES.SET_PIECE_MOVED_ONLINE, value });
 
-export const setAnimating = (value: boolean) => ({ type: TYPES.SET_ANIMATING, value });
-
 export const createGame = () => {
   return (dispatch: Dispatch) => {
     dispatch(setIsLoading(true));
@@ -48,7 +46,7 @@ export const joinGame = (code: string) => {
       .put(`${baseUrl}/games/join/${code}`, { device_id }, { timeout: 2000 })
       .then((response) => {
         if (response.data.status == "OK") {
-          let mainPlayer = response.data.data.players.filter((x) => x.device_id == device_id)[0];
+          let mainPlayer = response.data.data.players.filter((x: PlayerType) => x.device_id == device_id)[0];
           dispatch(setCode(code));
           dispatch(setStatus(response.data.data));
           dispatch(setMainPlayerColor(mainPlayer.color));
@@ -74,12 +72,12 @@ export const updateStatus = (code: string) => {
       .post(`${baseUrl}/games/updateStatus`, { code, device_id }, { timeout: 2000 })
       .then((response) => {
         if (response.data.status == "OK") {
-          if (response.data.data.movements == null) {
+          if (response.data.data.history == null) {
             dispatch(match.setPlayer(Color.WHITE));
           } else {
-            console.log(response.data.data.movements);
+            console.log(response.data.data.history);
             let len = 0;
-            if (response.data.data.movements !== null) len = JSON.parse(response.data.data.movements).length;
+            if (response.data.data.history !== null) len = JSON.parse(response.data.data.history).length;
 
             if (len % 2 == 0) dispatch(match.setPlayer(Color.WHITE));
             else dispatch(match.setPlayer(Color.BLACK));
@@ -103,7 +101,7 @@ export const updateStatus = (code: string) => {
   };
 };
 
-export const addMovement = (code: string, p_movement, callback) => {
+export const addMovement = (code: string, p_movement: string, callback: () => void) => {
   return (dispatch: Dispatch) => {
     let baseUrl = "http://192.168.1.114:3000";
     axios

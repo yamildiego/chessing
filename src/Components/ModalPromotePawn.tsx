@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   container: { padding: 10, borderRadius: 20, width: 100, alignItems: "center" },
 });
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: StateType) => ({
   is_playing: state.match.is_playing,
   pawn_promotion_position: state.match.pawn_promotion_position,
   status: state.match.data_finished.status,

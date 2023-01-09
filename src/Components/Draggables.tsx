@@ -1,10 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Chess } from "yd-chess-lib";
+import { Chess, Color } from "yd-chess-lib";
 
 import Draggable from "./Draggable";
 
-const Draggables = (props) => {
+interface DraggablesProps {
+  is_playing: Color;
+  status: string | null;
+  is_offline: boolean;
+  main_player_color: Color | null;
+}
+
+const Draggables = (props: DraggablesProps) => {
   const { is_playing, status, is_offline, main_player_color } = props;
   return (
     <>
@@ -25,9 +32,9 @@ const Draggables = (props) => {
   );
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: StateType) => ({
   is_playing: state.match.is_playing,
-  status: state.match.status,
+  status: state.match.data_finished.status,
   is_offline: state.online.code == null,
   main_player_color: state.online.main_player_color,
 });

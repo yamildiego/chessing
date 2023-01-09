@@ -79,11 +79,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: StateType) => ({
   board: state.game.board,
   square_selected: state.match.square_selected,
   show_legal_moves: state.config.show_legal_moves,
-  status: state.match.status,
+  status: state.match.data_finished.status,
   size_square: state.visual.size_square,
 });
 

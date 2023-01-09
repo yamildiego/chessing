@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: any) => ({});
+const mapStateToProps = (state: StateType) => ({});
 
 const mapDispatchToProps: MapDispatchToProps<any, any> = {
   initializedBoard: match.initializedBoard,

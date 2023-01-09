@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: StateType) => ({
   code: state.online.code,
   players: state.online.status.players,
   on_progress: state.online.on_progress,

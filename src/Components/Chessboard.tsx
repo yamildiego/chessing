@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: StateType) => ({
   is_playing: state.match.is_playing,
   flip: state.config.flip,
   is_offline: state.online.code == null,

@@ -1,5 +1,7 @@
 import * as TYPES from "../Reducers/types";
 
+import { Color } from "yd-chess-lib";
+
 export const initializedBoard = () => ({ type: TYPES.INITIALIZE_BOARD });
 
 export const setSquareSelected = (value: PieceType | null) => ({ type: TYPES.SET_SQUARE_SELECTED, value });

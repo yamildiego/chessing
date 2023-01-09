@@ -18,6 +18,8 @@ interface DraggableProps {
   flip: string;
   is_offline: boolean;
   code: string;
+  main_player_color: Color | null;
+  piece_moved_online: { from: string; to: string } | null;
   switchPlayer: () => void;
   setPieceMoved: (value: { from: string; to: string } | null) => void;
   setSquareSelected: (value: PieceType | null) => void;
@@ -137,12 +139,13 @@ const Draggable = (props: DraggableProps) => {
     let moved = Chess.getInstance().move(p_movement);
     if (moved) {
       let isInCheckMate = Chess.getInstance().isInCheckMate(main_player_color);
-      let isDraw = Chess.getInstance().isDraw(main_player_color);
-      if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
+      if (main_player_color !== null) {
+        let isDraw = Chess.getInstance().isDraw(main_player_color);
+        if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
+      }
 
       console.log("isInCheckMate", isInCheckMate);
       console.log("main_player_color", main_player_color);
-      console.log("isDraw", isDraw);
 
       if (isInCheckMate) {
         let winner = main_player_color == Color.WHITE ? Color.BLACK : Color.WHITE;
@@ -175,11 +178,8 @@ const Draggable = (props: DraggableProps) => {
         toValue: { ...getPositionPixeles(piece_moved_online.to, size_square) },
         useNativeDriver: true,
       }).start(() => {
-        movePieceOnline(`${piece_moved_online.from}x${piece_moved_online.to}`, item.color, getOpponent(item.color));
         console.log("animateion");
-        console.log("animateion");
-        console.log("animateion");
-        console.log("animateion");
+        movePieceOnline(`${piece_moved_online.from}x${piece_moved_online.to}`);
         // setTimeout(() =>
         // , 150);
       });
