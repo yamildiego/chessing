@@ -1,5 +1,5 @@
-import React, { Component, useRef, useEffect } from "react";
-import { View, Text, Animated } from "react-native";
+import React, { useRef, useEffect } from "react";
+import { Text, Animated } from "react-native";
 import { connect } from "react-redux";
 
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -40,7 +40,6 @@ const Piece = (props: PieceProps) => {
         duration: 100,
         toValue: 1,
         useNativeDriver: true,
-        speed: 120,
       }).start();
 
     if (color === Color.BLACK)
@@ -48,7 +47,6 @@ const Piece = (props: PieceProps) => {
         duration: 100,
         toValue: -1,
         useNativeDriver: true,
-        speed: 120,
       }).start();
   };
 

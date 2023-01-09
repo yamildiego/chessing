@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
+import { connect, MapDispatchToProps } from "react-redux";
 import Countdown from "yd-react-native-countdown";
 import { Color } from "yd-chess-lib";
 

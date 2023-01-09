@@ -20,6 +20,7 @@ interface DraggableProps {
   code: string;
   main_player_color: Color | null;
   piece_moved_online: { from: string; to: string } | null;
+  addMovement: (code: string, p_movement: string, callback: () => void) => void;
   switchPlayer: () => void;
   setPieceMoved: (value: { from: string; to: string } | null) => void;
   setSquareSelected: (value: PieceType | null) => void;
@@ -47,9 +48,9 @@ const Draggable = (props: DraggableProps) => {
 
   const pan = useRef(new Animated.ValueXY()).current;
   const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: (evt, gestureState) => true,
-    onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-    onPanResponderGrant: (evt, gestureState) => {
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponderCapture: () => true,
+    onPanResponderGrant: () => {
       setZIndex(1);
       pan.setOffset({ ...getPositionPixeles(item.key, size_square) });
       if (square_selected !== null && Chess.getInstance().isCasteling(square_selected.key, item.key) && piece_moved == null) {
@@ -65,10 +66,9 @@ const Draggable = (props: DraggableProps) => {
         (!is_offline && main_player_color == Color.BLACK) || (is_offline && flip == "board" && item.color == Color.BLACK) ? -1 : 1;
       pan.setValue({ x: gesture.dx * order, y: gesture.dy * order });
     },
-    onPanResponderRelease: (evt, gestureState) => {
+    onPanResponderRelease: () => {
       setZIndex(1);
       if (square_selected !== null && square_selected.key == item.key) {
-        const { pageX, pageY } = evt.nativeEvent;
         // pixeles moved
         let x = { ...pan.x };
         let y = { ...pan.y };
@@ -80,7 +80,6 @@ const Draggable = (props: DraggableProps) => {
         let position = tPosSN(item.key);
         let newPosition = { x: position.y + positionMovedX, y: position.x - positionMovedY };
         let newPositionText = tPosNS({ x: newPosition.y, y: newPosition.x });
-        let canMove = false;
 
         pan.flattenOffset();
 
@@ -138,18 +137,15 @@ const Draggable = (props: DraggableProps) => {
   const movePieceOnline = (p_movement: string) => {
     let moved = Chess.getInstance().move(p_movement);
     if (moved) {
-      let isInCheckMate = Chess.getInstance().isInCheckMate(main_player_color);
       if (main_player_color !== null) {
+        let isInCheckMate = Chess.getInstance().isInCheckMate(main_player_color);
         let isDraw = Chess.getInstance().isDraw(main_player_color);
         if (isDraw != null) props.setDataFinished({ status: isDraw, winner: "none", modal_visible: true });
-      }
 
-      console.log("isInCheckMate", isInCheckMate);
-      console.log("main_player_color", main_player_color);
-
-      if (isInCheckMate) {
-        let winner = main_player_color == Color.WHITE ? Color.BLACK : Color.WHITE;
-        props.setDataFinished({ status: "Checkmate", winner, modal_visible: true });
+        if (isInCheckMate) {
+          let winner = main_player_color == Color.WHITE ? Color.BLACK : Color.WHITE;
+          props.setDataFinished({ status: "Checkmate", winner, modal_visible: true });
+        }
       }
     }
   };

@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, ImageBackground, TouchableOpacity } from "react-native";
 import { connect, MapDispatchToProps } from "react-redux";
-import { Chess, tPosSN } from "yd-chess-lib";
+import { Chess } from "yd-chess-lib";
 
 import * as match from "../Actions/match";
 
@@ -36,7 +36,6 @@ const Board = (props: BoardProps) => {
 
   const tryToMove = (number: number, letter: string) => {
     let posString = `${8 - number}${letter}`;
-    let posNumber = tPosSN(posString);
     let square = Chess.getInstance().getSquare(posString);
     if (square_selected !== null && square == null) {
       if (square_selected.movementsAllowed.includes(posString)) props.setPieceMoved({ from: square_selected.key, to: posString });

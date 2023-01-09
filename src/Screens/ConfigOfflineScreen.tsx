@@ -1,18 +1,13 @@
 import React, { Component } from "react";
 import { Switch, StyleSheet, Text, View } from "react-native";
-import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
+import { connect, MapDispatchToProps } from "react-redux";
+import { Chess } from "yd-chess-lib";
 
 import * as config from "../Actions/config";
 import * as match from "../Actions/match";
 
 import { primaryColor } from "../Constants/MyColors";
 import Button from "../Components/Button";
-
-import background from "../Assets/background.jpg";
-import white from "../Assets/white.png";
-import black from "../Assets/black.png";
-
-import { Chess, TypeOfPiece, Color } from "yd-chess-lib";
 
 const times: { [key: number]: string } = { 300000: "5", 600000: "10", 900000: "15", 1800000: "30" };
 const flipOptions: { [key: string]: string } = { pieces: "Pieces", board: "Board" };

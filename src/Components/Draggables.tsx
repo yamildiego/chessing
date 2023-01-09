@@ -7,12 +7,10 @@ import Draggable from "./Draggable";
 interface DraggablesProps {
   is_playing: Color;
   status: string | null;
-  is_offline: boolean;
-  main_player_color: Color | null;
 }
 
 const Draggables = (props: DraggablesProps) => {
-  const { is_playing, status, is_offline, main_player_color } = props;
+  const { is_playing, status } = props;
   return (
     <>
       {Chess.getInstance()
@@ -35,8 +33,6 @@ const Draggables = (props: DraggablesProps) => {
 const mapStateToProps = (state: StateType) => ({
   is_playing: state.match.is_playing,
   status: state.match.data_finished.status,
-  is_offline: state.online.code == null,
-  main_player_color: state.online.main_player_color,
 });
 
 export default connect(mapStateToProps)(Draggables);

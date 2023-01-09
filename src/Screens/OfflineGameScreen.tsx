@@ -38,6 +38,11 @@ class OfflineGameScreen extends React.Component<OfflineGameScreenProps> {
     BackHandler.removeEventListener("hardwareBackPress", this.handleBackButtonClick);
   }
 
+  componentDidUpdate(prevProps: OfflineGameScreenProps) {
+    if (prevProps.offer_a_draw != this.props.offer_a_draw && this.props.offer_a_draw) this.showAlertOfferADraw();
+    if (prevProps.offer_a_draw != this.props.ask_for_resign && this.props.ask_for_resign) this.showAlertAskForResign();
+  }
+
   handleBackButtonClick() {
     if (this.props.navigation.isFocused()) {
       Alert.alert("Quit Game", "Are you sure?", [
@@ -96,20 +101,20 @@ class OfflineGameScreen extends React.Component<OfflineGameScreenProps> {
 
     return (
       <ImageBackground source={background} resizeMode="cover" style={styles.backgroundImage}>
-        <ModalWins navigation={this.props.navigation} />
-        <ModalPromotePawn />
-        {this.props.offer_a_draw ? this.showAlertOfferADraw() : ""}
-        {this.props.ask_for_resign ? this.showAlertAskForResign() : ""}
-        {flip == "pieces" && (
-          <>
-            <Options playerMain={false} color={Color.BLACK} />
-            <PlayersInfo playerMain={false} />
-          </>
-        )}
-        {flip !== "pieces" && <View style={{ flex: 2 }}></View>}
-        <Chessboard />
-        <PlayersInfo playerMain={true} />
-        <Options playerMain={true} color={flip == "pieces" ? Color.WHITE : is_playing} />
+        <View style={styles.container}>
+          <ModalWins navigation={this.props.navigation} />
+          <ModalPromotePawn />
+          {flip == "pieces" && (
+            <>
+              <Options playerMain={false} color={Color.BLACK} />
+              <PlayersInfo playerMain={false} />
+            </>
+          )}
+          {flip !== "pieces" && <View style={{ flex: 2 }}></View>}
+          <Chessboard />
+          <PlayersInfo playerMain={true} />
+          <Options playerMain={true} color={flip == "pieces" ? Color.WHITE : is_playing} />
+        </View>
       </ImageBackground>
     );
   }
@@ -119,6 +124,9 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     resizeMode: "cover",
+  },
+  container: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "space-between",
   },

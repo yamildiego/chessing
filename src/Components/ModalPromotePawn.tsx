@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { connect, MapDispatchToProps } from "react-redux";
 import { FontAwesome5 } from "@expo/vector-icons";
 

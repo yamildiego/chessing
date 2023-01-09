@@ -1,10 +1,8 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
-import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
+import { StyleSheet, Text, View } from "react-native";
+import { connect } from "react-redux";
 
-import { primaryColor } from "../Constants/MyColors";
 import MyModal from "./MyModal";
 import Button from "./Button";
-import * as match from "../Actions/match";
 import { Color } from "yd-chess-lib";
 
 interface ModalWinsProps {

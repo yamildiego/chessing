@@ -9,12 +9,6 @@ import * as online from "../Actions/online";
 import { primaryColor } from "../Constants/MyColors";
 import Button from "../Components/Button";
 
-import background from "../Assets/background.jpg";
-import white from "../Assets/white.png";
-import black from "../Assets/black.png";
-
-import { Chess, TypeOfPiece, Color } from "yd-chess-lib";
-
 const times: { [key: number]: string } = { 300000: "5", 600000: "10", 900000: "15", 1800000: "30" };
 
 interface ConfigOnlineScreenProps {
