@@ -31,7 +31,7 @@ type StateType = {
     ask_for_resign: boolean;
     pawn_promotion_position: string | null;
   };
-  visual: { windowWidth: number; sizeScreen: number; marginScreen: number; sizeSquare: number };
+  visual: { window_width: number; size_screen: number; margin_screen: number; size_square: number };
   online: {
     is_loading: boolean;
     code: string | null;

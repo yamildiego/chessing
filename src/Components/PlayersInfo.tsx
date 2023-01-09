@@ -6,16 +6,16 @@ import { Color } from "yd-chess-lib";
 import PlayerInfo from "./PlayerInfo";
 
 interface PlayersInfoProps {
-  sizeScreen: number;
+  size_screen: number;
   playerMain: boolean;
 }
 
 const PlayersInfo = (props: PlayersInfoProps) => {
-  const { sizeScreen, playerMain } = props;
+  const { size_screen, playerMain } = props;
   const transformFlip = { transform: !playerMain ? [{ scaleX: -1 }, { scaleY: -1 }] : [] };
 
   return (
-    <View style={{ ...transformFlip, width: sizeScreen }}>
+    <View style={{ ...transformFlip, width: size_screen }}>
       <View style={styles.subContainer}>
         <PlayerInfo playerMain={playerMain} color={Color.WHITE} />
         <PlayerInfo playerMain={playerMain} color={Color.BLACK} />
@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state: StateType) {
   return {
-    sizeScreen: state.visual.sizeScreen,
-    marginScreen: state.visual.marginScreen,
+    size_screen: state.visual.size_screen,
+    margin_screen: state.visual.margin_screen,
   };
 }
 

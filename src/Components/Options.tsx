@@ -6,8 +6,8 @@ import * as match from "../Actions/match";
 import { Color } from "yd-chess-lib";
 
 interface OptionsProps {
-  sizeScreen: number;
-  marginScreen: number;
+  size_screen: number;
+  margin_screen: number;
   playerMain: boolean;
   color: Color;
   is_playing: Color;
@@ -16,7 +16,7 @@ interface OptionsProps {
 }
 
 const Options = (props: OptionsProps) => {
-  const { sizeScreen, marginScreen, playerMain, color, is_playing } = props;
+  const { size_screen, margin_screen, playerMain, color, is_playing } = props;
   const transformFlip = { transform: !playerMain ? [{ scaleX: -1 }, { scaleY: -1 }] : [] };
 
   const draw = () => {
@@ -32,7 +32,7 @@ const Options = (props: OptionsProps) => {
 
   return (
     <View style={{ ...transformFlip, ...styles.container }}>
-      <View style={{ flexDirection: "row", width: sizeScreen, marginLeft: marginScreen }}>
+      <View style={{ flexDirection: "row", width: size_screen, marginLeft: margin_screen }}>
         <TouchableOpacity disabled={is_playing !== color} style={{ ...styles.button, ...disabledStyle }} onPress={draw}>
           <FontAwesome5 size={35} name={"handshake"} style={{ textAlign: "center", ...disabledStyle }} />
           <Text style={{ textAlign: "center", ...disabledStyle }}>Draw</Text>
@@ -61,8 +61,8 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state: StateType) {
   return {
-    sizeScreen: state.visual.sizeScreen,
-    marginScreen: state.visual.marginScreen,
+    size_screen: state.visual.size_screen,
+    margin_screen: state.visual.margin_screen,
     is_playing: state.match.is_playing,
   };
 }

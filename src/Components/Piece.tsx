@@ -18,16 +18,17 @@ interface PieceProps {
   is_playing: Color;
   flip: string;
   piece: PieceType;
-  size: number;
+  size_square: number;
 }
 
 const Piece = (props: PieceProps) => {
+  const { size_square, is_offline } = props;
   const scaleAnimated = useRef(new Animated.Value(1));
 
   const animatedStyle =
-    props.flip == "pieces"
+    props.flip == "pieces" && is_offline == true
       ? { transform: [{ scaleY: scaleAnimated.current }, { scaleX: scaleAnimated.current }] }
-      : props.is_playing == Color.BLACK
+      : (props.is_playing == Color.BLACK && is_offline == true) || (props.main_player_color == Color.BLACK && is_offline == false)
       ? { transform: [{ scaleY: -1 }, { scaleX: -1 }] }
       : {};
 
@@ -50,27 +51,27 @@ const Piece = (props: PieceProps) => {
   useEffect(() => onPress(props.is_playing), [props.is_playing]);
 
   return (
-    <Animated.View style={{ position: "relative", height: props.size, ...animatedStyle }}>
+    <Animated.View style={{ position: "relative", height: size_square, ...animatedStyle }}>
       <Text
         style={{
           position: "absolute",
-          width: props.size,
+          width: size_square,
           textAlign: "center",
           left: 1,
-          top: props.size * 0.192,
+          top: size_square * 0.192,
         }}
       >
         <FontAwesome5
           style={{ color: props.piece.color === Color.BLACK ? "white" : "black" }}
           name={pieces[props.piece.type]}
-          size={props.size * 0.58}
+          size={size_square * 0.58}
         />
       </Text>
-      <Text style={{ position: "absolute", width: props.size, textAlign: "center", top: props.size * 0.192 }}>
+      <Text style={{ position: "absolute", width: size_square, textAlign: "center", top: size_square * 0.192 }}>
         <FontAwesome5
           style={{ color: props.piece.color === Color.WHITE ? "white" : "black" }}
           name={pieces[props.piece.type]}
-          size={props.size * 0.58}
+          size={size_square * 0.58}
         />
       </Text>
     </Animated.View>
@@ -81,6 +82,9 @@ function mapStateToProps(state: StateType) {
   return {
     is_playing: state.match.is_playing,
     flip: state.config.flip,
+    size_square: state.visual.size_square,
+    is_offline: state.online.code == null,
+    main_player_color: state.online.main_player_color,
   };
 }
 

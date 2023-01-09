@@ -1,18 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, Animated, PanResponder, TouchableOpacity, View } from "react-native";
 import { connect, MapDispatchToProps } from "react-redux";
-import * as match from "../Actions/match";
-
 import { Chess, tPosNS, tPosSN, Color } from "yd-chess-lib";
+
+import Piece from "./Piece";
+
+import * as match from "../Actions/match";
 
 interface DraggableProps {
   item: PieceType;
   square_selected: PieceType | null;
-  size: number;
   isDraggable: boolean;
   piece_moved: { from: string; to: string };
   status: string | null;
-  sizeSquare: number;
+  size_square: number;
   flip: string;
   children: React.ReactNode;
   switchPlayer: () => void;
@@ -24,7 +25,7 @@ interface DraggableProps {
 
 const Draggable = (props: DraggableProps) => {
   const [zIndex, setZIndex] = useState(0);
-  const { item, square_selected, size, isDraggable, piece_moved, status, sizeSquare, flip } = props;
+  const { item, square_selected, isDraggable, piece_moved, status, size_square, flip } = props;
 
   const getOpponent = (color: Color) => (color == Color.WHITE ? Color.BLACK : Color.WHITE);
 
@@ -34,7 +35,7 @@ const Draggable = (props: DraggableProps) => {
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
     onPanResponderGrant: (evt, gestureState) => {
       setZIndex(1);
-      pan.setOffset({ ...getPositionPixeles(item.key, size) });
+      pan.setOffset({ ...getPositionPixeles(item.key, size_square) });
       if (square_selected !== null && Chess.getInstance().isCasteling(square_selected.key, item.key) && piece_moved == null) {
         tryToMove(item);
       } else if (
@@ -55,8 +56,8 @@ const Draggable = (props: DraggableProps) => {
         let x = { ...pan.x };
         let y = { ...pan.y };
         // calculated number of square moved
-        let positionMovedX = Math.round(x._value / size);
-        let positionMovedY = Math.round(y._value / size);
+        let positionMovedX = Math.round(x._value / size_square);
+        let positionMovedY = Math.round(y._value / size_square);
 
         // current position and new position
         let position = tPosSN(item.key);
@@ -69,7 +70,7 @@ const Draggable = (props: DraggableProps) => {
         //evaluate if its allow to move at the new squeare
         if (item.movementsAllowed.includes(newPositionText) && status == null) {
           Animated.spring(pan, {
-            toValue: { ...getPositionPixeles(newPositionText, size) },
+            toValue: { ...getPositionPixeles(newPositionText, size_square) },
             useNativeDriver: false,
           }).start();
           setTimeout(() => {
@@ -80,12 +81,12 @@ const Draggable = (props: DraggableProps) => {
 
           // if ramdom error that give the current coordinates instad of give the pixelesMoved set in the same spot wothout effect
           if (positionTest.y == position.y) {
-            pan.setValue({ ...getPositionPixeles(item.key, size) });
+            pan.setValue({ ...getPositionPixeles(item.key, size_square) });
           } else {
             if (item.key !== newPositionText) props.setSquareSelected(null);
 
             Animated.spring(pan, {
-              toValue: { ...getPositionPixeles(item.key, size) },
+              toValue: { ...getPositionPixeles(item.key, size_square) },
               useNativeDriver: false,
             }).start();
           }
@@ -113,11 +114,11 @@ const Draggable = (props: DraggableProps) => {
   };
 
   useEffect(() => {
-    pan.setValue({ ...getPositionPixeles(item.key, size) });
+    pan.setValue({ ...getPositionPixeles(item.key, size_square) });
 
     if (piece_moved !== null && piece_moved.from === item.key && status == null) {
       Animated.spring(pan, {
-        toValue: { ...getPositionPixeles(piece_moved.to, size) },
+        toValue: { ...getPositionPixeles(piece_moved.to, size_square) },
         useNativeDriver: false,
         velocity: 150,
         restSpeedThreshold: 20,
@@ -139,8 +140,8 @@ const Draggable = (props: DraggableProps) => {
 
   let transform = pan.getTranslateTransform();
 
-  if (item.key == "1h") transform = [{ translateX: sizeSquare * 7 }, { translateY: sizeSquare * 7 }];
-  if (item.key == "8h") transform = [{ translateX: sizeSquare * 7 }, { translateY: 0 }];
+  if (item.key == "1h") transform = [{ translateX: size_square * 7 }, { translateY: size_square * 7 }];
+  if (item.key == "8h") transform = [{ translateX: size_square * 7 }, { translateY: 0 }];
 
   return (
     <>
@@ -149,11 +150,16 @@ const Draggable = (props: DraggableProps) => {
         style={
           isDraggable
             ? [{ transform: transform }, { position: "absolute" }, { zIndex: zIndex }]
-            : [{ left: getPositionPixeles(item.key, size).x, top: getPositionPixeles(item.key, size).y }, { position: "absolute" }]
+            : [
+                { left: getPositionPixeles(item.key, size_square).x, top: getPositionPixeles(item.key, size_square).y },
+                { position: "absolute" },
+              ]
         }
       >
         <TouchableOpacity activeOpacity={1} onPress={() => (!isDraggable ? tryToMove(item) : null)}>
-          <View style={{ ...styles.itemDraggable, width: size, height: size }}>{props.children}</View>
+          <View style={{ ...styles.itemDraggable, width: size_square, height: size_square }}>
+            <Piece piece={item} />
+          </View>
         </TouchableOpacity>
       </Animated.View>
     </>
@@ -169,7 +175,7 @@ function mapStateToProps(state: StateType) {
     square_selected: state.match.square_selected,
     status: state.match.data_finished.status,
     piece_moved: state.match.piece_moved,
-    sizeSquare: state.visual.sizeSquare,
+    size_square: state.visual.size_square,
     flip: state.config.flip,
   };
 }
