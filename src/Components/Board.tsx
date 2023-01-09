@@ -20,12 +20,14 @@ interface BoardProps {
   status: string | null;
   size_square: number;
   flip: string;
+  is_offline: boolean;
+  main_player_color: string;
   setPieceMoved: (value: { from: string; to: string } | null) => void;
   setSquareSelected: (value: PieceType | null) => void;
 }
 
 const Board = (props: BoardProps) => {
-  const { board, is_playing, square_selected, show_legal_moves, status, size_square, flip } = props;
+  const { board, is_playing, square_selected, show_legal_moves, status, size_square, flip, is_offline, main_player_color } = props;
 
   const highlight = (number: number, letter: string) => {
     return (
@@ -50,7 +52,10 @@ const Board = (props: BoardProps) => {
     }
   };
 
-  const animatedStyle = flip == "board" && is_playing == Color.BLACK ? { transform: [{ scaleY: -1 }, { scaleX: -1 }] } : {};
+  const animatedStyle =
+    (is_offline && flip == "board" && is_playing == Color.BLACK) || (!is_offline && main_player_color == Color.BLACK)
+      ? { transform: [{ scaleY: -1 }, { scaleX: -1 }] }
+      : {};
 
   return (
     <View style={{ ...styles.board, ...animatedStyle }}>
@@ -65,15 +70,7 @@ const Board = (props: BoardProps) => {
                       <View style={{ width: size_square, height: size_square }}>
                         {highlight(number, letter) && <View style={{ ...styles.highlight, height: size_square - 20 }} />}
                         {isSelected(number, letter) && (
-                          <View
-                            style={{
-                              ...styles.highlight,
-                              margin: 5,
-                              width: size_square - 10,
-                              height: size_square - 10,
-                              backgroundColor: "#44444455",
-                            }}
-                          />
+                          <View style={{ ...styles.highlight, width: size_square - 10, height: size_square - 10, margin: 5 }} />
                         )}
                       </View>
                     </ImageBackground>
@@ -92,7 +89,12 @@ const Board = (props: BoardProps) => {
                   <React.Fragment key={`item_${indexX}_${indexY}`}>
                     {item !== null && (
                       <Draggable
-                        isDraggable={item !== null && item.color === is_playing && item.movementsAllowed.length > 0 && status == null}
+                        isDraggable={
+                          (is_offline || (!is_offline && main_player_color == is_playing)) &&
+                          item.color === is_playing &&
+                          item.movementsAllowed.length > 0 &&
+                          status == null
+                        }
                         item={item}
                       />
                     )}
@@ -128,6 +130,8 @@ const mapStateToProps = (state: any) => ({
   status: state.match.status,
   size_square: state.visual.size_square,
   flip: state.config.flip,
+  is_offline: state.online.code == null,
+  main_player_color: state.online.main_player_color,
 });
 
 const mapDispatchToProps: MapDispatchToProps<any, any> = {

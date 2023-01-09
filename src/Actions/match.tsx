@@ -8,6 +8,8 @@ export const setPieceMoved = (value: { from: string; to: string } | null) => ({ 
 
 export const switchPlayer = () => ({ type: TYPES.SWITCH_PLAYER });
 
+export const setPlayer = (value: Color) => ({ type: TYPES.SET_PLAYER, value });
+
 export const setDataFinished = (value: { status: string | null; winner: string | null; modal_visible: boolean }) => ({
   type: TYPES.SET_DATA_FINISHED,
   value,

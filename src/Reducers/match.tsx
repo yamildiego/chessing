@@ -22,6 +22,8 @@ export default function game(state = initialState, action: { type: string; value
       return { ...newState, square_selected: action.value };
     case TYPES.SWITCH_PLAYER:
       return { ...newState, is_playing: state.is_playing === Color.WHITE ? Color.BLACK : Color.WHITE };
+    case TYPES.SET_PLAYER:
+      return { ...newState, is_playing: action.value };
     case TYPES.SET_PIECE_MOVED:
       return { ...newState, piece_moved: action.value };
     case TYPES.SET_DATA_FINISHED:

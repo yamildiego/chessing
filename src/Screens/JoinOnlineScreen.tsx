@@ -11,6 +11,7 @@ import * as online from "../Actions/online";
 interface JoinOnlineScreenProps {
   code: string;
   players: Array<PlayerType>;
+  on_progress: boolean;
   joinGame: (code: string) => void;
   updateStatus: (code: string) => void;
   initializedBoard: () => void;
@@ -19,7 +20,7 @@ interface JoinOnlineScreenProps {
 }
 
 class JoinOnlineScreen extends Component<JoinOnlineScreenProps> {
-  state = { code: "" };
+  state = { code: "YAMIL" };
   private interval: ReturnType<typeof setInterval>;
 
   constructor(props: JoinOnlineScreenProps) {
@@ -38,7 +39,7 @@ class JoinOnlineScreen extends Component<JoinOnlineScreenProps> {
   }
 
   updateStatus = () => {
-    if (this.props.code !== null) this.props.updateStatus(this.props.code);
+    if (this.props.code !== null && this.props.on_progress == false) this.props.updateStatus(this.props.code);
   };
 
   handleBackButtonClick() {
@@ -61,12 +62,13 @@ class JoinOnlineScreen extends Component<JoinOnlineScreenProps> {
         this.props.navigation.goBack();
       }
     }
+    return true;
   }
 
   componentDidUpdate = (oldProps: JoinOnlineScreenProps) => {
     if (oldProps.players.length !== this.props.players.length && this.props.players.length == 2) {
       clearInterval(this.interval);
-      console.log("redirrecionar ongline game");
+      this.props.navigation.navigate("OnlineGameScreen");
     }
   };
 
@@ -92,7 +94,7 @@ class JoinOnlineScreen extends Component<JoinOnlineScreenProps> {
               value={this.state.code}
               onChange={(event) => this.setState({ code: event.nativeEvent.text })}
               autoCapitalize={"characters"}
-              style={{ fontSize: 20 }}
+              style={{ fontSize: 20, textAlign: "center" }}
               autoFocus={true}
               placeholder="Enter game code"
             />
@@ -141,6 +143,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state: any) => ({
   code: state.online.code,
   players: state.online.status.players,
+  on_progress: state.online.on_progress,
 });
 
 const mapDispatchToProps: MapDispatchToProps<any, any> = {

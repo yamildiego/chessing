@@ -4,6 +4,9 @@ import * as TYPES from "./types";
 const initialState = {
   is_loading: false,
   code: null,
+  on_progress: false,
+  main_player_color: null,
+  piece_moved: null,
   status: {
     players: [],
     history: [],
@@ -22,6 +25,12 @@ export default function online(state = initialState, action: { type: string; val
       return { ...newState, code: action.value };
     case TYPES.SET_STATUS:
       return { ...newState, status: action.value };
+    case TYPES.SET_ON_PROGRESS:
+      return { ...newState, on_progress: action.value };
+    case TYPES.SET_MAIN_PLAYER_COLOR:
+      return { ...newState, main_player_color: action.value };
+    case TYPES.SET_PIECE_MOVED_ONLINE:
+      return { ...newState, piece_moved: action.value };
     default:
       return state;
   }

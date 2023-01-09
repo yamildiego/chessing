@@ -17,6 +17,7 @@ import ConfigOfflineScreen from "./Screens/ConfigOfflineScreen";
 import ConfigOnlineScreen from "./Screens/ConfigOnlineScreen";
 import PlayOnlineScreen from "./Screens/PlayOnlineScreen";
 import LocalGameScreen from "./Screens/LocalGameScreen";
+import OnlineGameScreen from "./Screens/OnlineGameScreen";
 import JoinOnlineScreen from "./Screens/JoinOnlineScreen";
 
 import { secondaryColor } from "./Constants/MyColors";
@@ -90,6 +91,7 @@ export default function App() {
               name="JoinOnlineScreen"
               component={JoinOnlineScreen}
             />
+            <Stack.Screen options={{ headerShown: false }} name="OnlineGameScreen" component={OnlineGameScreen} />
             <Stack.Screen options={{ headerShown: false }} name="LocalGameScreen" component={LocalGameScreen} />
           </Stack.Navigator>
         </NavigationContainer>
